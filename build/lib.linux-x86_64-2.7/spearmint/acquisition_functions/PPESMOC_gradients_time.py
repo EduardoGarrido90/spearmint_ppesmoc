@@ -703,32 +703,59 @@ def update_full_Factors_only_test_factors(a, damping, minimize=True, no_negative
         for pp in range(n_pset):
             for qp in range(q):
                 #ES UN TILE! Segun la traza de error de autograd parece que un TILE la esta liando seriamente, y esta relacionado con ghfhat.
+                """
                 ghfhat = np.append(ghfhat, g00[tp, pp, qp]) 
                 ghfhat = np.append(ghfhat, g01[tp, pp, qp]) 
                 ghfhat = np.append(ghfhat, g10[tp, pp, qp]) 
                 ghfhat = np.append(ghfhat, g11[tp, pp, qp]) 
+                """
                 hhfhat = np.append(hhfhat, np.array([h0[tp, pp, qp], h1[tp, pp, qp]])) #OK
     #ghfhat = ghfhat.reshape((n_test, n_pset, q, 2, 2))
-    ghfhat = ghfhat.reshape((n_test, n_pset, q, 2, 2))
     hhfhat = hhfhat.reshape((n_test, n_pset, q, 2)) #OK
         
     #Alternative method
-    ghfhat_a = np.zeros((n_test, n_pset, q, 2, 2))
-    
-    """ PSEUDOCODE
-    ghfhat_a = ghfhat_a[:,:,:,0,0] + g00
-    ghfhat_a = ghfhat_a[:,:,:,0,1] + g01
-    ghfhat_a = ghfhat_a[:,:,:,1,0] + g10
-    ghfhat_a = ghfhat_a[:,:,:,1,1] + g11
-    hhfhat_a = np.zeros((n_test, n_pset, q, 2))
-    hhfhat_a = hhfhat_a[:,:,:,0] + h0
-    hhfhat_a = hhfhat_a[:,:,:,1] + h1
-    """
+    g00 = g00.flatten() #OK
+    g00_id = np.array([range(g00.shape[0]+1)])[0][1:]
+    g00 = np.insert(g00, g00_id, np.zeros(g00_id.shape[0]))
+    g00_id = np.array([range(g00.shape[0]+1)])[0][1:]
+    g00 = np.insert(g00, g00_id, np.zeros(g00_id.shape[0]))
+    g00 = g00.reshape((n_test, n_pset, q, 2, 2))
+
+    g01 = g01.flatten() #OK
+    g01_id = np.array([range(g01.shape[0]+1)])[0][1:]
+    g01 = np.insert(g01, g01_id, np.zeros(g01_id.shape[0]))
+    g01_id = np.array([range(g01.shape[0]+1)])[0][:-1]
+    g01 = np.insert(g01, g01_id, np.zeros(g01_id.shape[0]))
+    g01 = g01.reshape((n_test, n_pset, q, 2, 2))
+
+    g10 = g10.flatten() #OK
+    g10_id = np.array([range(g10.shape[0]+1)])[0][:-1]
+    g10 = np.insert(g10, g10_id, np.zeros(g10_id.shape[0]))
+    g10_id = np.array([range(g10.shape[0]+1)])[0][1:]
+    g10 = np.insert(g10, g10_id, np.zeros(g10_id.shape[0]))
+    g10 = g10.reshape((n_test, n_pset, q, 2, 2))
+
+    g11 = g11.flatten() #OK
+    g11_id = np.array([range(g11.shape[0]+1)])[0][:-1]
+    g11 = np.insert(g11, g11_id, np.zeros(g11_id.shape[0]))
+    g11_id = np.array([range(g11.shape[0]+1)])[0][:-1]
+    g11 = np.insert(g11, g11_id, np.zeros(g11_id.shape[0]))
+    g11 = g11.reshape((n_test, n_pset, q, 2, 2))
+
+    h0 = h0.flatten() #OK
+    h0_id = np.array([range(h0.shape[0]+1)])[0][1:]
+    h0 = np.insert(h0, h0_id, np.zeros(h0_id.shape[0]))
+    h0 = h0.reshape((n_test, n_pset, q, 2))
+
+    h1 = h1.flatten() #OK
+    h1_id = np.array([range(h1.shape[0]+1)])[0][:-1]
+    h1 = np.insert(h1, h1_id, np.zeros(h1_id.shape[0]))
+    h1 = h1.reshape((n_test, n_pset, q, 2))
 
     #Do ghfhat and hhfhat as in the update marginals method.
     import pdb; pdb.set_trace();
-    a['ghfhat'] = ghfhat
-    a['hhfhat'] = hhfhat
+    a['ghfhat'] = g00 + g01 + g10 + g11
+    a['hhfhat'] = h0 + h1
     #a['ghfhat'][ :, :, :, 0, 0 ] = vTilde_test_new.T * damping + (1 - damping) * a['ghfhat'][ :, :, :, 0, 0 ]
     #a['ghfhat'][ :, :, :, 1, 1 ] = vTilde_pset_new.T * damping + (1 - damping) * a['ghfhat'][ :, :, :, 1, 1 ]
     #a['ghfhat'][ :, :, :, 0, 1 ] = vTilde_cov_new.T * damping + (1 - damping) * a['ghfhat'][ :, :, :, 0, 1 ]
