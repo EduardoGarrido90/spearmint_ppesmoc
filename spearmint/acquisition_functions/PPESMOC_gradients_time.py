@@ -302,85 +302,49 @@ def update_full_marginals(a):
                 ntask = 0
                 for obj in all_tasks:
 
-                        #vTilde = np.zeros((n_total,n_total))
+                        vTilde = np.zeros((n_total,n_total))
+                        diagVtilde = np.identity(n_total) * np.append(np.append(np.sum(a['ahfhat'][ :, : , ntask, 0, 0 ], axis = 1), \
+                                            np.sum(a['ahfhat'][ :, : , ntask, 1, 1 ], axis = 0) + \
+                                            np.sum(a['chfhat'][ :, : , ntask, 0, 0 ], axis = 1) + \
+                                            np.sum(a['chfhat'][ :, : , ntask, 1, 1 ], axis = 0) + \
+                                            np.sum(a['ghfhat'][ :, : , ntask, 1, 1 ], axis = 0)), \
+                                            np.sum(a['ghfhat'][ :, : , ntask, 0, 0 ], axis = 1))
 
-                        block_1 = np.diag(np.append(np.append(np.sum(a['ahfhat'][ :, : , ntask, 0, 0 ], axis = 1), \
-                                    np.sum(a['ahfhat'][ :, : , ntask, 1, 1 ], axis = 0) + \
-                                    np.sum(a['chfhat'][ :, : , ntask, 0, 0 ], axis = 1) + \
-                                    np.sum(a['chfhat'][ :, : , ntask, 1, 1 ], axis = 0) + \
-                                    np.sum(a['ghfhat'][ :, : , ntask, 1, 1 ], axis = 0)), \
-                                    np.sum(a['ghfhat'][ :, : , ntask, 0, 0 ], axis = 1)))
+                        #block_2 = block_1[ n_obs : n_obs + n_pset, n_obs : n_obs + n_pset ] + a['chfhat'][ :, : , ntask, 0, 1 ] + a['chfhat'][ :, : , ntask, 1, 0 ].T
+                        #Building full matrices from blocks.
+                        block_2 = a['chfhat'][ :, : , ntask, 0, 1 ] + a['chfhat'][ :, : , ntask, 1, 0 ].T
+                        block_2 = np.hstack([np.zeros((n_pset, n_obs)), block_2])
+                        block_2 = np.hstack([block_2, np.zeros((n_pset, n_obs))])
+                        block_2 = np.vstack([np.zeros((n_obs, n_total)), block_2])
+                        block_2 = np.vstack([block_2, np.zeros((n_obs, n_total))])
 
-                        
-                        """
-                        #DEBUG. #############################################
-                        import pdb; pdb.set_trace();
-                        vd = np.zeros((n_total,n_total))
-                        vd[ np.eye(n_total).astype('bool') ] = np.append(np.append(np.sum(a['ahfhat'][ :, : , ntask, 0, 0 ], axis = 1), \
-                                np.sum(a['ahfhat'][ :, : , ntask, 1, 1 ], axis = 0) + np.sum(a['chfhat'][ :, : , ntask, 0, 0 ], axis = 1) + \
-                                np.sum(a['chfhat'][ :, : , ntask, 1, 1 ], axis = 0) + np.sum(a['ghfhat'][ :, : , ntask, 1, 1 ], axis = 0)._value), \
-                                np.sum(a['ghfhat'][ :, : , ntask, 0, 0 ], axis = 1)._value)
-                        vd[ n_obs : n_obs + n_pset, n_obs : n_obs + n_pset ] = vd[ n_obs : n_obs + n_pset, n_obs : n_obs + n_pset ] + \
-                                a['chfhat'][ :, : , ntask, 0, 1 ] + a['chfhat'][ :, : , ntask, 1, 0 ].T
-                        vd[ 0 : n_obs, n_obs : n_obs + n_pset ] = a['ahfhat'][ :, :, ntask, 0, 1]
-                        vd[ n_obs : n_obs + n_pset, 0 : n_obs ] =  a['ahfhat'][ :, :, ntask, 0, 1].transpose()
-
-                        vd[ n_obs + n_pset : n_total, n_obs : n_obs + n_pset ] = a['ghfhat'][ :, :, ntask, 0, 1]._value
-                        vd[ n_obs : n_obs + n_pset, n_obs + n_pset : n_total ] =  a['ghfhat'][ :, :, ntask, 0, 1].transpose()._value
-                        ######################################################
-                        """
-                        """
-                        vTilde[ np.eye(n_total).astype('bool') ] = np.append(np.append(np.sum(a['ahfhat'][ :, : , ntask, 0, 0 ], axis = 1), \
-                                np.sum(a['ahfhat'][ :, : , ntask, 1, 1 ], axis = 0) + np.sum(a['chfhat'][ :, : , ntask, 0, 0 ], axis = 1) + \
-                                np.sum(a['chfhat'][ :, : , ntask, 1, 1 ], axis = 0) + np.sum(a['ghfhat'][ :, : , ntask, 1, 1 ], axis = 0)), \
-                                np.sum(a['ghfhat'][ :, : , ntask, 0, 0 ], axis = 1))
-                        """
-                        block_2 = block_1[ n_obs : n_obs + n_pset, n_obs : n_obs + n_pset ] + a['chfhat'][ :, : , ntask, 0, 1 ] + a['chfhat'][ :, : , ntask, 1, 0 ].T
-
-                        #vTilde[ n_obs : n_obs + n_pset, n_obs : n_obs + n_pset ] = vTilde[ n_obs : n_obs + n_pset, n_obs : n_obs + n_pset ] + \
-                                #a['chfhat'][ :, : , ntask, 0, 1 ] + a['chfhat'][ :, : , ntask, 1, 0 ].T
                         block_3 = a['ahfhat'][ :, :, ntask, 0, 1]
+                        block_3 = np.hstack([np.zeros((n_obs, n_obs)), block_3])
+                        block_3 = np.hstack([block_3, np.zeros((n_obs, n_test))])
+                        block_3 = np.vstack([block_3, np.zeros((n_pset + n_test, n_total))])        
+
                         block_4 = a['ahfhat'][ :, :, ntask, 0, 1].transpose()
+                        block_4 = np.hstack([block_4, np.zeros((n_pset, n_pset+n_test))])
+                        block_4 = np.vstack([np.zeros((n_obs, n_total)), block_4])
+                        block_4 = np.vstack([block_4, np.zeros((n_obs, n_total))])
+                        
                         block_5 = a['ghfhat'][ :, :, ntask, 0, 1]
+                        block_5 = np.hstack([np.zeros((n_test, n_obs)), block_5])
+                        block_5 = np.hstack([block_5, np.zeros((n_test, n_test))])
+                        block_5 = np.vstack([np.zeros((n_obs+n_pset, n_total)), block_5])
+    
                         block_6 = a['ghfhat'][ :, :, ntask, 0, 1].transpose()
-
-                        #Building the matrix.
-                        vTilde = np.array([])
-                        for x_index in range(n_total):
-                            for y_index in range(n_total):
-                                #Block_2
-                                if (x_index >= n_obs and x_index < n_obs + n_pset and y_index >= n_obs and y_index < n_obs + n_pset) \
-                                or (x_index==y_index and x_index >= n_obs and x_index < n_obs + n_pset and y_index >= n_obs and y_index < n_obs + n_pset):
-                                        vTilde = np.append(vTilde, block_2[x_index - n_obs, y_index - n_obs])
-                                #Block_1
-                                elif x_index == y_index:
-                                        vTilde = np.append(vTilde, block_1[x_index, y_index])
-                                #Block_3
-                                elif x_index < n_obs and y_index >= n_obs and y_index < n_obs + n_pset:
-                                        vTilde = np.append(vTilde, block_3[x_index, y_index - n_obs])
-                                #Block_4
-                                elif x_index >= n_obs and x_index < n_obs + n_pset and y_index < n_obs:
-                                        vTilde = np.append(vTilde, block_4[x_index - n_obs, y_index])
-                                #Block_5
-                                elif x_index >=  n_obs + n_pset and y_index >= n_obs and y_index < n_obs + n_pset:
-                                        vTilde = np.append(vTilde, block_5[x_index - n_obs - n_pset, y_index - n_obs])
-                                #Block_6
-                                elif x_index >= n_obs and x_index < n_obs + n_pset and y_index >= n_obs + n_pset:
-                                        vTilde = np.append(vTilde, block_6[x_index - n_obs, y_index - n_obs - n_pset])
-                                #Default 0
-                                else:   
-                                        vTilde = np.append(vTilde, 1e-15)
-
-                        #TODO: Test that acq==autograd_acq. No da lo mismo. Hacer una version con cambios y otra sin, ir incorporandolos.
-                        #TODO: Test that grad_acq==autograd_grad_acq
-                        vTilde = vTilde.reshape((n_total, n_total))
-                        """
-                        vTilde[ 0 : n_obs, n_obs : n_obs + n_pset ] = a['ahfhat'][ :, :, ntask, 0, 1]
-                        vTilde[ n_obs : n_obs + n_pset, 0 : n_obs ] =  a['ahfhat'][ :, :, ntask, 0, 1].transpose()
-
-                        vTilde[ n_obs + n_pset : n_total, n_obs : n_obs + n_pset ] = a['ghfhat'][ :, :, ntask, 0, 1]
-                        vTilde[ n_obs : n_obs + n_pset, n_obs + n_pset : n_total ] =  a['ghfhat'][ :, :, ntask, 0, 1].transpose()   
-                        """
+                        block_6 = np.hstack([np.zeros((n_pset, n_obs + n_pset)), block_6])
+                        block_6 = np.vstack([np.zeros((n_obs, n_total)), block_6])
+                        block_6 = np.vstack([block_6, np.zeros((n_test, n_total))])
+            
+                        #Adding to final matrix all the blocks.
+                        vTilde += diagVtilde   
+                        vTilde += block_2
+                        vTilde += block_3
+                        vTilde += block_4
+                        vTilde += block_5
+                        vTilde += block_6
 
                         a['Vinv'][obj] = a['VpredInv'][obj] + vTilde
                         a['V'][obj] = np.linalg.inv(a['VpredInv'][obj] + vTilde)

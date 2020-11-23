@@ -14,8 +14,8 @@ Description: spearmint: Bayesian optimization codebase
         ## IMPORTANT: Please read about the license
         Spearmint is under an **Academic and Non-Commercial Research Use License**.  Before using spearmint please be aware of the [license](LICENSE.md).  If you do not qualify to use spearmint you can ask to obtain a license as detailed in the [license](LICENSE.md) or you can use the older open source code version (which is somewhat outdated) at https://github.com/JasperSnoek/spearmint.  
         
-        ## IMPORTANT: You are off the main branch!
-        This is the PESM branch. This branch contains the Predictive Entropy Search for Multiobjective Optimization. Predictive Entropy Search with Constraints should also work as described in the paper Predictive Entropy Search for Bayesian Optimization with Unknown Constraints. 
+        ## IMPORTANT: You are off the main branch and the method is currently being modified! It is not guaranteed that it works!
+        This is the PPESMOC branch. This branch contains the Parallel Predictive Entropy Search for Multiobjective Optimization with Constraints. The work is under development. If you have any doubts, please send an email to eduardo.garrido@uam.es
         
         ####Relevant Publications
         
@@ -46,13 +46,10 @@ Description: spearmint: Bayesian optimization codebase
         
         This branch also includes the method in 
         
-            Predictive Entropy Search for Bayesian Optimization with Unknown Constraints
-            José Miguel Hernández-Lobato, Michael A. Gelbart, Matthew W. Hoffman, Ryan P. Adams, Zoubin Ghahramani
-            arXiv: 1502.05312 [stat.ML], 2015.
+            Parallel Predictive Entropy Search for Multi-objective Bayesian Optimization with Constraints
+            Eduardo C. Garrido-Merchan, Daniel Hernandez-Lobato
+            arXiv.
         
-            Predictive Entropy Search for Multi-objective Bayesian Optimizaton
-            Daniel Hernandez-Lobato, Jose Miguel Hernandez-Lobato, Amar Shah and Ryan Prescott Adams
-            NIPS workshop on Bayesian optimization, 2015
         
         ### STEP 1: Installation
         1. Download/clone the spearmint code
