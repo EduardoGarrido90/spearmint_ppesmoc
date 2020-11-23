@@ -1,0 +1,56 @@
+{
+    "language"        : "PYTHON",
+    "random_seed"     : 1,
+    "moo_use_grid_only_to_solve_problem" : true,
+    "moo_grid_size_to_solve_problem" : 1000,
+    "pesm_use_grid_only_to_solve_problem" : true,
+    "likelihood"      : "GAUSSIAN",
+    "acquisition"     : "PPESMOC",
+    "pesm_pareto_set_size"      : 50,
+    "pesm_not_constrain_predictions"     : false,
+    "language"        : "PYTHON",
+    "main_file"       : "mocotoy_con",
+    "grid_size"       : 1000,
+    "batch_size"      : 3,
+    "max_finished_jobs"       : 10,
+    "experiment-name" : "mocotoy_constraint_multiobjective_parallel",
+    "variables": {
+        "X": {
+            "type": "FLOAT",
+            "size": 1,
+            "min":  -10,
+            "max":  10
+        },
+        "Y": {
+            "type": "FLOAT",
+            "size": 1,
+            "min":  -10,
+            "max":  10
+        }
+    },
+    "tasks": {
+      "mocotoy_1" : {
+          "type"        : "OBJECTIVE",
+	  "fit_mean"    : false,
+          "transformations"     : [],
+	  "group"    : 1
+      },
+      "mocotoy_2" : {
+          "type"        : "OBJECTIVE",
+	  "fit_mean"    : false,
+          "transformations"     : [],
+	  "group"    : 2
+      },
+      "c1" : { "type" : "constraint", 
+		"fit_mean" : false,
+                "transformations"     : [],
+	        "group"    : 3
+	},
+      "c2" : { "type" : "constraint", 
+		"fit_mean" : false,
+                "transformations"     : [],
+	        "group"    : 4
+	}
+    }
+}
+

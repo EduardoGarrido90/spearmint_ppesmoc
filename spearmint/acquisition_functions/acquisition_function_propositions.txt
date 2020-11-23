@@ -1,0 +1,18 @@
+Proposiciones para optimizar la funcion de adquisicion PPESMOC con su coste añadido:
+
+1. Random multi-start, parámetro: Batches donde buscar. La idea es ejecutar PPESMOC sobre una serie de batches sampleado de forma aleatoria. Tomaremos como punto inicial el mejor de todos ellos. La complejidad es ejecutar PPESMOC sobre cada uno de estos batches. 
+
+-> Si se asume que la funcion tiene optimos locales, aunque L-BFGS use gradientes, si haces esa optimizacion puedes quedar encerrado en uno de ellos. De esta forma, tienes probabilidad de huir de ellos desde un principio.
+
+2. Grid multi-start, parámetro: Batches donde buscar. Hacer lo mismo que en la funcion de adquisicion Random multi-start pero en grid. Exploracion del espacio uniforme pero si una dimension domina mas que el resto estarias haciendo evaluaciones inutiles. La complejidad es ejecutar PPESMOC sobre cada uno de estos batches.
+
+Reflexion común a 1) y 2). Tengo la impresión de que simplemente con tomar 10 batches y quedarte con el mejor, los resultados de L-BFGS pueden mejorar mucho. No debería ser muy costoso hacer esto, yo creo que merece la pena intentarlo y ver que sucede.
+
+3. PESMOC para el primer punto buscado en grid, el resto aleatorio. Puede ser que el maximo de PESMOC no tenga nada que ver con el maximo de PPESMOC, aun asi puede estar relacionado y heuristicamente puede ser un punto valido a tener en cuenta. Coste: Grid total (1000 puntos por defecto) para PESMOC.
+
+OK 4. Usar un PPESMOC en grid con max_ep_iterations muy reducido y sin gradientes. Tomar el mejor punto de todos ellos. Complejidad mucho menor en cada punto de PPESMOC pero te puede dar una intuición de un buen punto donde comenzar la busqueda.
+
+Observacion: Al principio la función de adquisición sera muy plana, ya que no hay apenas observaciones, yo haria esto a partir de 5 puntos como poco.
+
+
+Observacion 2: Para elegir el PPESMOC que se ejecuta, meter un campo en config PPESMOC_TYPE que sea vanilla,grid,random,pesmoc o ppes_reduced. Para el numero de batches donde buscar meter en config un campo PPESMOC_NUM_BATCHES que sea el numero de batches que se van a tomar. Sino se especifica nada se carga vanilla.

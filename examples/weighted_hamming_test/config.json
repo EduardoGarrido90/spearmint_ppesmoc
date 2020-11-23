@@ -1,0 +1,39 @@
+{
+    "language"        : "PYTHON",
+    "random_seed"     : 1,
+    "max_finished_jobs"       : 10,
+    "experiment-name" : "exp_1",
+    "likelihood"      : "NOISELESS",
+    "main_file"       : "wrapper",
+    "acquisition"     : "PES",
+    "mcmc_iters"      : 10,
+    "kernel"          : "WeightedHammingDistance",
+    "variables": {
+	 "a" : {
+           "type" : "ENUM",
+           "size" : 1,
+           "options" : ["a","b", "c"]
+        },
+	"b" : {
+           "type" : "ENUM",
+           "size" : 1, 
+           "options" : ["d","e", "f", "g"]
+        },
+	"c" : {
+           "type" : "ENUM",
+           "size" : 1, 
+           "options" : ["h", "i", "j", "k", "l"]
+        }
+    },
+    "tasks": {
+      "score" : {
+          "type"        : "OBJECTIVE",
+          "fit_mean"    : false,
+          "transformations" : [
+                {"Categorical" : { "categorical_dimensions" : [ 0,3,7 ], "num_values" : [ 3,4,5 ]   }}
+                ],
+          "group"    : 0
+      }
+    }
+
+}	

@@ -1,0 +1,6 @@
+TODOs
+==============
+
+1. Cachear el EP para que la solucion anterior sea el punto inicial de la siguiente.
+2. Ir probando las derivadas.
+3. Tenerlas todas en bloque.

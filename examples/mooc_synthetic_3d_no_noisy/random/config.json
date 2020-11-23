@@ -1,0 +1,51 @@
+{
+    "language"        : "PYTHON",
+    "random_seed"     : 1,
+    "main_file"       : "prog",
+    "grid_size"       : 1000,
+    "max_finished_jobs"       : 100,
+    "experiment-name" : "synthetic_1_random_noiseless",
+    "moo_use_grid_only_to_solve_problem" : true,
+    "moo_grid_size_to_solve_problem" : 1000,
+    "pesm_use_grid_only_to_solve_problem" : true,
+    "likelihood"      : "NOISELESS",
+    "acquisition"     : "RANDOM",
+    "pesm_pareto_set_size"      : 50,
+    "pesm_not_constrain_predictions"     : false,
+    "transformations"     : [],
+    "variables": {
+        "X": {
+            "type": "FLOAT",
+            "size": 1,
+            "min":  0,
+            "max":  1
+        },
+        "Y": {
+            "type": "FLOAT",
+            "size": 1,
+            "min":  0,
+            "max":  1
+        },
+        "Z": {
+            "type": "FLOAT",
+            "size": 1,
+            "min":  0,
+            "max":  1
+        }
+    },
+    "tasks": {
+      "o1" : {
+          "type"        : "OBJECTIVE",
+	  "fit_mean"    : false,
+	  "group"    : 0
+      },
+      "o2" : {
+          "type"        : "OBJECTIVE",
+	  "fit_mean"    : false,
+	  "group"    : 0
+      },
+      "c1" : { "type" : "constraint", "fit_mean" : false },
+      "c2" : { "type" : "constraint", "fit_mean" : false }
+    }
+}
+

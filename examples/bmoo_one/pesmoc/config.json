@@ -1,0 +1,48 @@
+{
+    "language"        : "PYTHON",
+    "random_seed"     : 1,
+    "main_file"       : "bmoo_one",
+    "grid_size"       : 1000,
+    "delta" : 		0.01,
+    "max_finished_jobs"       : 50,
+    "experiment-name" : "bmoo_one_pesmoc",
+    "moo_use_grid_only_to_solve_problem"      : true,
+    "moo_grid_size_to_solve_problem" : 1000,
+    "likelihood"      : "NOISELESS",
+    "acquisition"     : "PESMC",
+    "variables": {
+        "X": {
+            "type": "FLOAT",
+            "size": 1,
+            "min":  -5,
+            "max":  10
+        },
+        "Y": {
+            "type": "FLOAT",
+            "size": 1,
+            "min":  0,
+            "max":  15
+        }
+    },
+    "tasks": {
+      "o1" : {
+          "type"        : "OBJECTIVE",
+	  "fit_mean"    : false,
+          "transformations"     : [],
+	  "group"    : 0
+      },
+      "o2" : {
+          "type"        : "OBJECTIVE",
+	  "fit_mean"    : false,
+          "transformations"     : [],
+	  "group"    : 0
+      },
+      "c1" : { 
+	"type" : "constraint",
+	"transformations" : [], 
+	"fit_mean" : false,
+        "group"  : 0 
+	}
+    }
+}
+

@@ -1,0 +1,12 @@
+Mean numpy time: 0.08340859413147 seconds.
+Std. numpy time: 0.00574915088004594 seconds.
+Mean autograd time: 0.1697152137756 seconds.
+Std. autograd time: 0.002356740596796057 seconds.
+Mean grad_autograd time: 1.224577927589 seconds.
+Std. grad_autograd time: 0.018432816350578533 seconds.
+Mean autograd_time time: 0.18055496215819997 seconds.
+Std. autograd_time time: 0.0027189697729950225 seconds.
+Mean grad_autograd_time time: 1.24648423195 seconds.
+Std. grad_autograd_time time: 0.024516708360052646 seconds.
+
+

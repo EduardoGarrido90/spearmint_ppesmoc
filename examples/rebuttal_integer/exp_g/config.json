@@ -1,0 +1,47 @@
+{
+    "language"        : "PYTHON",
+    "random_seed"     : 1,
+    "max_finished_jobs"       : 10,
+    "experiment-name" : "exp_1",
+    "likelihood"      : "NOISELESS",
+    "main_file"       : "wrapper",
+    "acquisition"     : "PES",
+    "mcmc_iters"      : 10,
+    "optimizer"       : "One_Exchange_Neighbourhood",
+    "variables": {
+	 "a_cat" : {
+           "type" : "ENUM",
+           "size" : 1,
+           "options" : ["a", "b", "c", "d", "e"]
+        },
+	"b_cat" : {
+           "type" : "ENUM",
+           "size" : 1,
+           "options" : ["f", "g", "h", "i", "j"]
+        },
+        "c_int" : {
+            "type" : "FLOAT",
+            "size" : 1,
+            "min" : 0,
+            "max" : 1
+        },
+        "d_real" : {
+            "type" : "FLOAT",
+            "size" : 1,
+            "min" : 0,
+            "max" : 50
+        }
+    },
+    "tasks": {
+      "score" : {
+          "type"        : "OBJECTIVE",
+          "fit_mean"    : false,
+          "transformations" : [
+                {"Categorical" : { "categorical_dimensions" : [ 0, 5 ], "num_values" : [ 5,5 ]   }},
+                {"Integer" : { "integer_dimensions" : [ 10 ], "num_values" : [ 200 ]   }}
+                ],
+          "group"    : 0
+      }
+    }
+
+}	

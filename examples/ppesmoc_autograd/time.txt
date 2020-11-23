@@ -1,0 +1,6 @@
+Elapsed time for opt. with differences: 1160.1011939 seconds 3 iterations of L-BFGS.
+Elapsed time for opt. with Autograd: 419.590098858 seconds 3 iterations of L-BFGS.
+After logs only: Elapsed time for opt. with Autograd: 275.411109924 seconds 3 iterations of L-BFGS.
+
+
+Prueba de numpy vs autograd. Tiempos.

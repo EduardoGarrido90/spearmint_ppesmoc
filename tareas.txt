@@ -1,0 +1,1 @@
+Calcular la diferencia: Evaluar la funcion de adquisicion vs evaluar los gradientes

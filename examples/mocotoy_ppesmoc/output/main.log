@@ -1,0 +1,127 @@
+Generating grammar tables from /usr/lib/python2.7/lib2to3/Grammar.txt
+Generating grammar tables from /usr/lib/python2.7/lib2to3/PatternGrammar.txt
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Current time: 2019-05-22 11:43:18
+Status: 1 pending, 0 complete.
+ID(s) of pending job(s) for c2, c1, mocotoy_2, mocotoy_1: 1
+
+
+Current time: 2019-05-22 11:43:21
+Status: 1 pending, 1 complete.
+ID(s) of pending job(s) for c2, c1, mocotoy_2, mocotoy_1: 2
+
+
+Current time: 2019-05-22 11:43:24
+Status: 1 pending, 2 complete.
+ID(s) of pending job(s) for c2, c1, mocotoy_2, mocotoy_1: 3
+
+
+Fitting GP to 3 data for c2 task...
+Fitting GP to 3 data for c1 task...
+Fitting GP to 3 data for mocotoy_2 task...
+Fitting GP to 3 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 1 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Current time: 2019-05-22 11:43:29
+Status: 1 pending, 3 complete.
+ID(s) of pending job(s) for c2, c1, mocotoy_2, mocotoy_1: 4
+Generating grammar tables from /usr/lib/python2.7/lib2to3/Grammar.txt
+Generating grammar tables from /usr/lib/python2.7/lib2to3/PatternGrammar.txt
+Fitting GP to 4 data for c2 task...
+Fitting GP to 4 data for c1 task...
+Fitting GP to 4 data for mocotoy_2 task...
+Fitting GP to 4 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 1 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Computing PPESMOC for mocotoy_1
+Optimizing PPESMOC with L-BFGS
+Generating grammar tables from /usr/lib/python2.7/lib2to3/Grammar.txt
+Generating grammar tables from /usr/lib/python2.7/lib2to3/PatternGrammar.txt
+Fitting GP to 4 data for c2 task...
+Fitting GP to 4 data for c1 task...
+Fitting GP to 4 data for mocotoy_2 task...
+Fitting GP to 4 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 1 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Computing PPESMOC for mocotoy_1
+Optimizing PPESMOC with L-BFGS
+Generating grammar tables from /usr/lib/python2.7/lib2to3/Grammar.txt
+Generating grammar tables from /usr/lib/python2.7/lib2to3/PatternGrammar.txt
+Fitting GP to 4 data for c2 task...
+Fitting GP to 4 data for c1 task...
+Fitting GP to 4 data for mocotoy_2 task...
+Fitting GP to 4 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 3 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Computing PPESMOC for mocotoy_1
+Optimizing PPESMOC with L-BFGS
+Generating grammar tables from /usr/lib/python2.7/lib2to3/Grammar.txt
+Generating grammar tables from /usr/lib/python2.7/lib2to3/PatternGrammar.txt
+Fitting GP to 4 data for c2 task...
+Fitting GP to 4 data for c1 task...
+Fitting GP to 4 data for mocotoy_2 task...
+Fitting GP to 4 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 2 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Computing PPESMOC for mocotoy_1
+Optimizing PPESMOC with L-BFGS
+Generating grammar tables from /usr/lib/python2.7/lib2to3/Grammar.txt
+Generating grammar tables from /usr/lib/python2.7/lib2to3/PatternGrammar.txt
+Fitting GP to 4 data for c2 task...
+Fitting GP to 4 data for c1 task...
+Fitting GP to 4 data for mocotoy_2 task...
+Fitting GP to 4 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 1 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Computing PPESMOC for c2, c1, mocotoy_2, mocotoy_1
+Optimizing PPESMOC with L-BFGS
+Fitting GP to 3 data for c2 task...
+Fitting GP to 3 data for c1 task...
+Fitting GP to 3 data for mocotoy_2 task...
+Fitting GP to 3 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 1 opt.
+
+Maximum number of jobs completed. Have a nice day.
+--- 3.34383797646 seconds ---
+--- 0.334383797646 seconds per iteration ---

@@ -1,0 +1,87 @@
+
+At iterate    0    f= -2.19981D+00    |proj g|=  8.52388D-01
+
+At iterate    1    f= -2.70558D+00    |proj g|=  8.77156D-01
+
+At iterate    2    f= -2.80429D+00    |proj g|=  9.39915D-01
+
+At iterate    3    f= -2.83062D+00    |proj g|=  1.00000D+00
+
+At iterate    4    f= -2.84376D+00    |proj g|=  8.53676D-01
+
+At iterate    5    f= -2.84943D+00    |proj g|=  4.50090D-01
+
+At iterate    6    f= -2.85446D+00    |proj g|=  4.20786D-01
+
+At iterate    7    f= -2.85688D+00    |proj g|=  3.76931D-01
+
+At iterate    8    f= -2.86333D+00    |proj g|=  3.98865D-01
+
+At iterate    9    f= -2.94815D+00    |proj g|=  3.56174D-01
+
+At iterate   10    f= -3.03368D+00    |proj g|=  4.99362D-01
+
+At iterate   11    f= -3.03406D+00    |proj g|=  4.86246D-01
+
+At iterate   12    f= -3.05529D+00    |proj g|=  4.54623D-01
+
+At iterate   13    f= -3.05643D+00    |proj g|=  3.48753D-01
+
+At iterate   14    f= -3.06193D+00    |proj g|=  2.26514D-01
+
+At iterate   15    f= -3.06440D+00    |proj g|=  1.25174D-01
+
+           * * *
+
+Tit   = total number of iterations
+Tnf   = total number of function evaluations
+Tnint = total number of segments explored during Cauchy searches
+Skip  = number of BFGS updates skipped
+Nact  = number of active bounds at final generalized Cauchy point
+Projg = norm of the final projected gradient
+F     = final function value
+
+           * * *
+
+   N    Tit     Tnf  Tnint  Skip  Nact     Projg        F
+    6     15     33     21     0     0   1.252D-01  -3.064D+00
+  F =  -3.0643986682948117     
+
+STOP: TOTAL NO. of ITERATIONS REACHED LIMIT                 
+
+ Cauchy                time 0.000E+00 seconds.
+ Subspace minimization time 0.000E+00 seconds.
+ Line search           time 0.000E+00 seconds.
+
+ Total User time 0.000E+00 seconds.
+
+Elapsed time for opt. with Autograd: 1145.91121912
+Testing convergence with the value of the function in the neighbourhood of the optimum.
+Test number 0
+> /usr/local/lib/python2.7/dist-packages/spearmint-0.1-py2.7-linux-x86_64.egg/spearmint/choosers/default_chooser.py(986)compute_acquisition_function()
+-> assert y_opt[0] < y_opt_plus[0]
+(Pdb) y_opt_plus[0]
+-3.064384786555588
+(Pdb) y_opt[0]
+-3.0643986682948117
+(Pdb) c
+OK!
+Test number 1
+> /usr/local/lib/python2.7/dist-packages/spearmint-0.1-py2.7-linux-x86_64.egg/spearmint/choosers/default_chooser.py(985)compute_acquisition_function()
+-> import pdb; pdb.set_trace();
+(Pdb) y_opt[0]
+-3.0643986682948117
+(Pdb) y_opt_plus[0]
+-3.064392192383556
+(Pdb) c
+OK!
+Test number 2
+> /usr/local/lib/python2.7/dist-packages/spearmint-0.1-py2.7-linux-x86_64.egg/spearmint/choosers/default_chooser.py(986)compute_acquisition_function()
+-> assert y_opt[0] < y_opt_plus[0]
+(Pdb) y_opt[0]
+-3.0643986682948117
+(Pdb) y_opt_plus[0]
+-3.0643888699534885
+(Pdb) c
+OK!
+

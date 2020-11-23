@@ -1,0 +1,38 @@
+Job launching after 0.41 seconds in submission.
+Running python job.
+Changed into dir /home/dani/Research/PPESMOC/bayesopt/examples/mocotoy_ppesmoc
+Importing mocotoy_con.py
+Running mocotoy_con.main()
+Got result {'c2': array([-3.53195152]), 'c1': array([-3.26043924]), 'mocotoy_2': array([-11.51571332]), 'mocotoy_1': array([11.51571332])}
+Completed successfully in 0.00 seconds. [{'c2': array([-3.53195152]), 'c1': array([-3.26043924]), 'mocotoy_2': array([-11.51571332]), 'mocotoy_1': array([11.51571332])}]
+Error in atexit._run_exitfuncs:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/atexit.py", line 24, in _run_exitfuncs
+    func(*targs, **kargs)
+  File "/usr/local/lib/python2.7/dist-packages/pymongo/periodic_executor.py", line 167, in _shutdown_executors
+    executor.join(1)
+  File "/usr/local/lib/python2.7/dist-packages/pymongo/periodic_executor.py", line 96, in join
+    self._thread.join(timeout)
+  File "/usr/lib/python2.7/threading.py", line 951, in join
+    self.__block.wait(delay)
+  File "/usr/lib/python2.7/threading.py", line 359, in wait
+    _sleep(delay)
+KeyboardInterrupt
+Error in sys.exitfunc:
+Evaluating at (-3.260439, -3.531952)
+c1: [-3.26043924]
+c2: [-3.53195152]
+obj1: [11.51571332]
+obj2: [-11.51571332]
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/atexit.py", line 24, in _run_exitfuncs
+    func(*targs, **kargs)
+  File "/usr/local/lib/python2.7/dist-packages/pymongo/periodic_executor.py", line 167, in _shutdown_executors
+    executor.join(1)
+  File "/usr/local/lib/python2.7/dist-packages/pymongo/periodic_executor.py", line 96, in join
+    self._thread.join(timeout)
+  File "/usr/lib/python2.7/threading.py", line 951, in join
+    self.__block.wait(delay)
+  File "/usr/lib/python2.7/threading.py", line 359, in wait
+    _sleep(delay)
+KeyboardInterrupt

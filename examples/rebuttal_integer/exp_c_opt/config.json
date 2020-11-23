@@ -1,0 +1,62 @@
+{
+    "language"        : "PYTHON",
+    "random_seed"     : 1,
+    "max_finished_jobs"       : 150,
+    "experiment-name" : "exp_c_opt_1",
+    "likelihood"      : "NOISELESS",
+    "main_file"       : "wrapper",
+    "acquisition"     : "PES",
+    "mcmc_iters"      : 10,
+    "optimizer"  : "One_Exchange_Neighbourhood",
+    "transformations_for_opt" : [
+                {"Integer" : { "integer_dimensions" : [ 0,1,2,3,4,5 ], "num_values" : [ 6,6,6,6,6,6 ]   }}
+                ],
+    "variables": {
+        "a" : {
+            "type" : "FLOAT",
+            "size" : 1,
+            "min" : 0,
+            "max" : 1
+        },
+	"b" : {
+            "type" : "FLOAT",
+            "size" : 1,
+            "min" : 0,
+            "max" : 1
+        },
+	"c" : {
+            "type" : "FLOAT",
+            "size" : 1,
+            "min" : 0,
+            "max" : 1
+        },
+	"d" : {
+            "type" : "FLOAT",
+            "size" : 1,
+            "min" : 0,
+            "max" : 1
+        },
+	"e" : {
+            "type" : "FLOAT",
+            "size" : 1,
+            "min" : 0,
+            "max" : 1
+        },
+	"f" : {
+            "type" : "FLOAT",
+            "size" : 1,
+            "min" : 0,
+            "max" : 1
+        }
+    },
+    "tasks": {
+      "score" : {
+          "type"        : "OBJECTIVE",
+          "fit_mean"    : false,
+          "transformations" : [
+                ],
+          "group"    : 0
+      }
+    }
+
+}	

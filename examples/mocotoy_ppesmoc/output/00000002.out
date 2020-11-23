@@ -1,0 +1,12 @@
+Job launching after 3.45 seconds in submission.
+Running python job.
+Changed into dir /home/dani/Research/PPESMOC/bayesopt/examples/mocotoy_ppesmoc
+Importing mocotoy_con.py
+Running mocotoy_con.main()
+Got result {'c2': array([-7.06488218]), 'c1': array([-3.95334855]), 'mocotoy_2': array([-27.92994172]), 'mocotoy_1': array([27.92994172])}
+Completed successfully in 0.00 seconds. [{'c2': array([-7.06488218]), 'c1': array([-3.95334855]), 'mocotoy_2': array([-27.92994172]), 'mocotoy_1': array([27.92994172])}]
+Evaluating at (-3.953349, -7.064882)
+c1: [-3.95334855]
+c2: [-7.06488218]
+obj1: [27.92994172]
+obj2: [-27.92994172]
