@@ -711,6 +711,22 @@ def update_full_Factors_only_test_factors(a, damping, minimize=True, no_negative
     #ghfhat = ghfhat.reshape((n_test, n_pset, q, 2, 2))
     ghfhat = ghfhat.reshape((n_test, n_pset, q, 2, 2))
     hhfhat = hhfhat.reshape((n_test, n_pset, q, 2)) #OK
+        
+    #Alternative method
+    ghfhat_a = np.zeros((n_test, n_pset, q, 2, 2))
+    
+    """ PSEUDOCODE
+    ghfhat_a = ghfhat_a[:,:,:,0,0] + g00
+    ghfhat_a = ghfhat_a[:,:,:,0,1] + g01
+    ghfhat_a = ghfhat_a[:,:,:,1,0] + g10
+    ghfhat_a = ghfhat_a[:,:,:,1,1] + g11
+    hhfhat_a = np.zeros((n_test, n_pset, q, 2))
+    hhfhat_a = hhfhat_a[:,:,:,0] + h0
+    hhfhat_a = hhfhat_a[:,:,:,1] + h1
+    """
+
+    #Do ghfhat and hhfhat as in the update marginals method.
+    import pdb; pdb.set_trace();
     a['ghfhat'] = ghfhat
     a['hhfhat'] = hhfhat
     #a['ghfhat'][ :, :, :, 0, 0 ] = vTilde_test_new.T * damping + (1 - damping) * a['ghfhat'][ :, :, :, 0, 0 ]
