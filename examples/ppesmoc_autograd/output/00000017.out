@@ -1,0 +1,12 @@
+Job launching after 3.38 seconds in submission.
+Running python job.
+Changed into dir /home/eduardo/dev/python/spearmint_ppesmoc/examples/ppesmoc_autograd
+Importing mocotoy_con.py
+Running mocotoy_con.main()
+Got result {'c2': array([7.97876328]), 'c1': array([0.06901878]), 'mocotoy_2': array([-0.55068448]), 'mocotoy_1': array([0.55068448])}
+Completed successfully in 0.00 seconds. [{'c2': array([7.97876328]), 'c1': array([0.06901878]), 'mocotoy_2': array([-0.55068448]), 'mocotoy_1': array([0.55068448])}]
+Evaluating at (0.069019, 7.978763)
+c1: [0.06901878]
+c2: [7.97876328]
+obj1: [0.55068448]
+obj2: [-0.55068448]

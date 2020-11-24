@@ -17,6 +17,7 @@ spearmint.egg-info/dependency_links.txt
 spearmint.egg-info/top_level.txt
 spearmint/acquisition_functions/BMOO.py
 spearmint/acquisition_functions/PPESMOC_gradients.py
+spearmint/acquisition_functions/PPESMOC_gradients_edu.py
 spearmint/acquisition_functions/PPESMOC_gradients_time.py
 spearmint/acquisition_functions/PPESMOC_gradients_uncond.py
 spearmint/acquisition_functions/__init__.py
@@ -29,6 +30,7 @@ spearmint/acquisition_functions/par_2.py
 spearmint/acquisition_functions/par_ego.py
 spearmint/acquisition_functions/para_1.py
 spearmint/acquisition_functions/parallel_predictive_entropy_search_multiobjective_constraints.py
+spearmint/acquisition_functions/parallel_predictive_entropy_search_multiobjective_constraints_edu.py
 spearmint/acquisition_functions/parallel_random.py
 spearmint/acquisition_functions/parallel_sequential.py
 spearmint/acquisition_functions/parallel_sequential_broken.py

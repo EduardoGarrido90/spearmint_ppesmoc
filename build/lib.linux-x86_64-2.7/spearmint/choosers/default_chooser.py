@@ -957,16 +957,16 @@ class DefaultChooser(object):
                                 return f(x)[ 0 ]
 
                             #print(f_no_grad(initial_point.flatten()))
-                            import time
-                            start = time.time()
+                            #import time
+                            #start = time.time()
 			    #x_opt, y_opt, opt_info = spo.fmin_l_bfgs_b(f_no_grad, initial_point.flatten(), \
                                 #bounds=bounds, disp=1, approx_grad=True, maxiter = 3)
-                            end = time.time()
-                            print('Elapsed time for opt. with differences: ' + str(end-start))
+                            #end = time.time()
+                            #print('Elapsed time for opt. with differences: ' + str(end-start))
                             #TODO DEBUG QUIT THIS print('X_opt with differences: ' + x_opt)
                             #TODO DEBUG QUIT THIS print('y_opt with differences: ' + y_opt)
                             #print('initial point with differences: ' + initial_point)
-                            start = time.time()
+                            #start = time.time()
                         
                             """
                             #TIME TEST: NUMPY FUNCTION VS AUTOGRAD FUNCTION.    
@@ -984,11 +984,12 @@ class DefaultChooser(object):
                             print('Elapsed time for Autograd function: ' + str(end-start))
                             """
                             x_opt, y_opt, opt_info = spo.fmin_l_bfgs_b(f, initial_point.flatten(), \
-                                bounds=bounds, disp=1, approx_grad=not acq.has_gradients, maxiter= 3)
+                                bounds=bounds, disp=1, approx_grad=not acq.has_gradients, maxiter= 20)
                             #print(f_no_grad(initial_point.flatten()))
-                            end = time.time()
+                            #end = time.time()
                             #Test time is OK!!! =)
-                            print('Elapsed time for opt. with Autograd: ' + str(end-start))
+                            #print('Elapsed time for opt. with Autograd: ' + str(end-start))
+                            """
                             import pdb; pdb.set_trace();
                             #Testing convergence.
                             print('Testing convergence with the value of the function in the neighbourhood of the optimum.')
@@ -1010,6 +1011,7 @@ class DefaultChooser(object):
                             #print('initial point with Autograd: ' + initial_point)
                             #print(y_opt)
                             #print(opt_info)
+                            """
 #			    x_opt, y_opt, opt_info = spo.fmin_l_bfgs_b(f, initial_point.flatten(), \
 #                                bounds=bounds, disp=0, approx_grad=not acq.has_gradients)
                         else:

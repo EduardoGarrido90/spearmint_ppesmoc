@@ -302,49 +302,85 @@ def update_full_marginals(a):
                 ntask = 0
                 for obj in all_tasks:
 
-                        vTilde = np.zeros((n_total,n_total))
-                        diagVtilde = np.identity(n_total) * np.append(np.append(np.sum(a['ahfhat'][ :, : , ntask, 0, 0 ], axis = 1), \
-                                            np.sum(a['ahfhat'][ :, : , ntask, 1, 1 ], axis = 0) + \
-                                            np.sum(a['chfhat'][ :, : , ntask, 0, 0 ], axis = 1) + \
-                                            np.sum(a['chfhat'][ :, : , ntask, 1, 1 ], axis = 0) + \
-                                            np.sum(a['ghfhat'][ :, : , ntask, 1, 1 ], axis = 0)), \
-                                            np.sum(a['ghfhat'][ :, : , ntask, 0, 0 ], axis = 1))
+                        #vTilde = np.zeros((n_total,n_total))
 
-                        #block_2 = block_1[ n_obs : n_obs + n_pset, n_obs : n_obs + n_pset ] + a['chfhat'][ :, : , ntask, 0, 1 ] + a['chfhat'][ :, : , ntask, 1, 0 ].T
-                        #Building full matrices from blocks.
-                        block_2 = a['chfhat'][ :, : , ntask, 0, 1 ] + a['chfhat'][ :, : , ntask, 1, 0 ].T
-                        block_2 = np.hstack([np.zeros((n_pset, n_obs)), block_2])
-                        block_2 = np.hstack([block_2, np.zeros((n_pset, n_obs))])
-                        block_2 = np.vstack([np.zeros((n_obs, n_total)), block_2])
-                        block_2 = np.vstack([block_2, np.zeros((n_obs, n_total))])
+                        block_1 = np.diag(np.append(np.append(np.sum(a['ahfhat'][ :, : , ntask, 0, 0 ], axis = 1), \
+                                    np.sum(a['ahfhat'][ :, : , ntask, 1, 1 ], axis = 0) + \
+                                    np.sum(a['chfhat'][ :, : , ntask, 0, 0 ], axis = 1) + \
+                                    np.sum(a['chfhat'][ :, : , ntask, 1, 1 ], axis = 0) + \
+                                    np.sum(a['ghfhat'][ :, : , ntask, 1, 1 ], axis = 0)), \
+                                    np.sum(a['ghfhat'][ :, : , ntask, 0, 0 ], axis = 1)))
 
-                        block_3 = a['ahfhat'][ :, :, ntask, 0, 1]
-                        block_3 = np.hstack([np.zeros((n_obs, n_obs)), block_3])
-                        block_3 = np.hstack([block_3, np.zeros((n_obs, n_test))])
-                        block_3 = np.vstack([block_3, np.zeros((n_pset + n_test, n_total))])        
-
-                        block_4 = a['ahfhat'][ :, :, ntask, 0, 1].transpose()
-                        block_4 = np.hstack([block_4, np.zeros((n_pset, n_pset+n_test))])
-                        block_4 = np.vstack([np.zeros((n_obs, n_total)), block_4])
-                        block_4 = np.vstack([block_4, np.zeros((n_obs, n_total))])
                         
+                        """
+                        #DEBUG. #############################################
+                        import pdb; pdb.set_trace();
+                        vd = np.zeros((n_total,n_total))
+                        vd[ np.eye(n_total).astype('bool') ] = np.append(np.append(np.sum(a['ahfhat'][ :, : , ntask, 0, 0 ], axis = 1), \
+                                np.sum(a['ahfhat'][ :, : , ntask, 1, 1 ], axis = 0) + np.sum(a['chfhat'][ :, : , ntask, 0, 0 ], axis = 1) + \
+                                np.sum(a['chfhat'][ :, : , ntask, 1, 1 ], axis = 0) + np.sum(a['ghfhat'][ :, : , ntask, 1, 1 ], axis = 0)._value), \
+                                np.sum(a['ghfhat'][ :, : , ntask, 0, 0 ], axis = 1)._value)
+                        vd[ n_obs : n_obs + n_pset, n_obs : n_obs + n_pset ] = vd[ n_obs : n_obs + n_pset, n_obs : n_obs + n_pset ] + \
+                                a['chfhat'][ :, : , ntask, 0, 1 ] + a['chfhat'][ :, : , ntask, 1, 0 ].T
+                        vd[ 0 : n_obs, n_obs : n_obs + n_pset ] = a['ahfhat'][ :, :, ntask, 0, 1]
+                        vd[ n_obs : n_obs + n_pset, 0 : n_obs ] =  a['ahfhat'][ :, :, ntask, 0, 1].transpose()
+
+                        vd[ n_obs + n_pset : n_total, n_obs : n_obs + n_pset ] = a['ghfhat'][ :, :, ntask, 0, 1]._value
+                        vd[ n_obs : n_obs + n_pset, n_obs + n_pset : n_total ] =  a['ghfhat'][ :, :, ntask, 0, 1].transpose()._value
+                        ######################################################
+                        """
+                        """
+                        vTilde[ np.eye(n_total).astype('bool') ] = np.append(np.append(np.sum(a['ahfhat'][ :, : , ntask, 0, 0 ], axis = 1), \
+                                np.sum(a['ahfhat'][ :, : , ntask, 1, 1 ], axis = 0) + np.sum(a['chfhat'][ :, : , ntask, 0, 0 ], axis = 1) + \
+                                np.sum(a['chfhat'][ :, : , ntask, 1, 1 ], axis = 0) + np.sum(a['ghfhat'][ :, : , ntask, 1, 1 ], axis = 0)), \
+                                np.sum(a['ghfhat'][ :, : , ntask, 0, 0 ], axis = 1))
+                        """
+                        block_2 = block_1[ n_obs : n_obs + n_pset, n_obs : n_obs + n_pset ] + a['chfhat'][ :, : , ntask, 0, 1 ] + a['chfhat'][ :, : , ntask, 1, 0 ].T
+
+                        #vTilde[ n_obs : n_obs + n_pset, n_obs : n_obs + n_pset ] = vTilde[ n_obs : n_obs + n_pset, n_obs : n_obs + n_pset ] + \
+                                #a['chfhat'][ :, : , ntask, 0, 1 ] + a['chfhat'][ :, : , ntask, 1, 0 ].T
+                        block_3 = a['ahfhat'][ :, :, ntask, 0, 1]
+                        block_4 = a['ahfhat'][ :, :, ntask, 0, 1].transpose()
                         block_5 = a['ghfhat'][ :, :, ntask, 0, 1]
-                        block_5 = np.hstack([np.zeros((n_test, n_obs)), block_5])
-                        block_5 = np.hstack([block_5, np.zeros((n_test, n_test))])
-                        block_5 = np.vstack([np.zeros((n_obs+n_pset, n_total)), block_5])
-    
                         block_6 = a['ghfhat'][ :, :, ntask, 0, 1].transpose()
-                        block_6 = np.hstack([np.zeros((n_pset, n_obs + n_pset)), block_6])
-                        block_6 = np.vstack([np.zeros((n_obs, n_total)), block_6])
-                        block_6 = np.vstack([block_6, np.zeros((n_test, n_total))])
-            
-                        #Adding to final matrix all the blocks.
-                        vTilde += diagVtilde   
-                        vTilde += block_2
-                        vTilde += block_3
-                        vTilde += block_4
-                        vTilde += block_5
-                        vTilde += block_6
+
+                        #Building the matrix.
+                        vTilde = np.array([])
+                        for x_index in range(n_total):
+                            for y_index in range(n_total):
+                                #Block_2
+                                if (x_index >= n_obs and x_index < n_obs + n_pset and y_index >= n_obs and y_index < n_obs + n_pset) \
+                                or (x_index==y_index and x_index >= n_obs and x_index < n_obs + n_pset and y_index >= n_obs and y_index < n_obs + n_pset):
+                                        vTilde = np.append(vTilde, block_2[x_index - n_obs, y_index - n_obs])
+                                #Block_1
+                                elif x_index == y_index:
+                                        vTilde = np.append(vTilde, block_1[x_index, y_index])
+                                #Block_3
+                                elif x_index < n_obs and y_index >= n_obs and y_index < n_obs + n_pset:
+                                        vTilde = np.append(vTilde, block_3[x_index, y_index - n_obs])
+                                #Block_4
+                                elif x_index >= n_obs and x_index < n_obs + n_pset and y_index < n_obs:
+                                        vTilde = np.append(vTilde, block_4[x_index - n_obs, y_index])
+                                #Block_5
+                                elif x_index >=  n_obs + n_pset and y_index >= n_obs and y_index < n_obs + n_pset:
+                                        vTilde = np.append(vTilde, block_5[x_index - n_obs - n_pset, y_index - n_obs])
+                                #Block_6
+                                elif x_index >= n_obs and x_index < n_obs + n_pset and y_index >= n_obs + n_pset:
+                                        vTilde = np.append(vTilde, block_6[x_index - n_obs, y_index - n_obs - n_pset])
+                                #Default 0
+                                else:   
+                                        vTilde = np.append(vTilde, 1e-15)
+
+                        #TODO: Test that acq==autograd_acq. No da lo mismo. Hacer una version con cambios y otra sin, ir incorporandolos.
+                        #TODO: Test that grad_acq==autograd_grad_acq
+                        vTilde = vTilde.reshape((n_total, n_total))
+                        """
+                        vTilde[ 0 : n_obs, n_obs : n_obs + n_pset ] = a['ahfhat'][ :, :, ntask, 0, 1]
+                        vTilde[ n_obs : n_obs + n_pset, 0 : n_obs ] =  a['ahfhat'][ :, :, ntask, 0, 1].transpose()
+
+                        vTilde[ n_obs + n_pset : n_total, n_obs : n_obs + n_pset ] = a['ghfhat'][ :, :, ntask, 0, 1]
+                        vTilde[ n_obs : n_obs + n_pset, n_obs + n_pset : n_total ] =  a['ghfhat'][ :, :, ntask, 0, 1].transpose()   
+                        """
 
                         a['Vinv'][obj] = a['VpredInv'][obj] + vTilde
                         a['V'][obj] = np.linalg.inv(a['VpredInv'][obj] + vTilde)
@@ -699,7 +735,6 @@ def update_full_Factors_only_test_factors(a, damping, minimize=True, no_negative
     h0 = mTilde_test_new.T * damping + (1 - damping) * a['hhfhat'][ :, :, :, 0 ] #OK
     h1 = mTilde_pset_new.T * damping + (1 - damping) * a['hhfhat'][ :, :, :, 1 ] #OK
 
-    """
     for tp in range(n_test):
         for pp in range(n_pset):
             for qp in range(q):
@@ -710,51 +745,10 @@ def update_full_Factors_only_test_factors(a, damping, minimize=True, no_negative
                 ghfhat = np.append(ghfhat, g11[tp, pp, qp]) 
                 hhfhat = np.append(hhfhat, np.array([h0[tp, pp, qp], h1[tp, pp, qp]])) #OK
     #ghfhat = ghfhat.reshape((n_test, n_pset, q, 2, 2))
+    ghfhat = ghfhat.reshape((n_test, n_pset, q, 2, 2))
     hhfhat = hhfhat.reshape((n_test, n_pset, q, 2)) #OK
-    """
-        
-    #Alternative method
-    g00 = g00.flatten() #OK
-    g00_id = np.array([range(g00.shape[0]+1)])[0][1:]
-    g00 = np.insert(g00, g00_id, np.zeros(g00_id.shape[0]))
-    g00_id = np.array([range(g00.shape[0]+1)])[0][1:]
-    g00 = np.insert(g00, g00_id, np.zeros(g00_id.shape[0]))
-    g00 = g00.reshape((n_test, n_pset, q, 2, 2))
-
-    g01 = g01.flatten() #OK
-    g01_id = np.array([range(g01.shape[0]+1)])[0][1:]
-    g01 = np.insert(g01, g01_id, np.zeros(g01_id.shape[0]))
-    g01_id = np.array([range(g01.shape[0]+1)])[0][:-1]
-    g01 = np.insert(g01, g01_id, np.zeros(g01_id.shape[0]))
-    g01 = g01.reshape((n_test, n_pset, q, 2, 2))
-
-    g10 = g10.flatten() #OK
-    g10_id = np.array([range(g10.shape[0]+1)])[0][:-1]
-    g10 = np.insert(g10, g10_id, np.zeros(g10_id.shape[0]))
-    g10_id = np.array([range(g10.shape[0]+1)])[0][1:]
-    g10 = np.insert(g10, g10_id, np.zeros(g10_id.shape[0]))
-    g10 = g10.reshape((n_test, n_pset, q, 2, 2))
-
-    g11 = g11.flatten() #OK
-    g11_id = np.array([range(g11.shape[0]+1)])[0][:-1]
-    g11 = np.insert(g11, g11_id, np.zeros(g11_id.shape[0]))
-    g11_id = np.array([range(g11.shape[0]+1)])[0][:-1]
-    g11 = np.insert(g11, g11_id, np.zeros(g11_id.shape[0]))
-    g11 = g11.reshape((n_test, n_pset, q, 2, 2))
-
-    h0 = h0.flatten() #OK
-    h0_id = np.array([range(h0.shape[0]+1)])[0][1:]
-    h0 = np.insert(h0, h0_id, np.zeros(h0_id.shape[0]))
-    h0 = h0.reshape((n_test, n_pset, q, 2))
-
-    h1 = h1.flatten() #OK
-    h1_id = np.array([range(h1.shape[0]+1)])[0][:-1]
-    h1 = np.insert(h1, h1_id, np.zeros(h1_id.shape[0]))
-    h1 = h1.reshape((n_test, n_pset, q, 2))
-
-    #Do ghfhat and hhfhat as in the update marginals method.
-    a['ghfhat'] = g00 + g01 + g10 + g11
-    a['hhfhat'] = h0 + h1
+    a['ghfhat'] = ghfhat
+    a['hhfhat'] = hhfhat
     #a['ghfhat'][ :, :, :, 0, 0 ] = vTilde_test_new.T * damping + (1 - damping) * a['ghfhat'][ :, :, :, 0, 0 ]
     #a['ghfhat'][ :, :, :, 1, 1 ] = vTilde_pset_new.T * damping + (1 - damping) * a['ghfhat'][ :, :, :, 1, 1 ]
     #a['ghfhat'][ :, :, :, 0, 1 ] = vTilde_cov_new.T * damping + (1 - damping) * a['ghfhat'][ :, :, :, 0, 1 ]
@@ -767,7 +761,7 @@ def update_full_Factors_only_test_factors(a, damping, minimize=True, no_negative
     #a['h_c_hfhat'][ :, :, : ] = h_c_hfHatNew.T * damping + (1 - damping) * a['h_c_hfhat'][ :, :, : ]
     return a
 
-def compute_acq_fun_wrt_test_points_time(X_test, obj_model_dict, con_models_dict, pareto_set, info_gps, tasks):#, log, fun_log):
+def compute_acq_fun_wrt_test_points(X_test, obj_model_dict, con_models_dict, pareto_set, info_gps, tasks):#, log, fun_log):
 
             #Execute necessary functionality for the test factors update and the recomputation of the marginals and PPESMOC.
             acq, unconstrainedVariances, constrainedVariances = compute_unconstrained_variances_and_init_acq_fun \
@@ -827,16 +821,9 @@ def compute_acq_fun_wrt_test_points_time(X_test, obj_model_dict, con_models_dict
 
                 #Execute EP modification of the test factors and the PPESMOC approximation.
                 #First we have to do an EP update marginals.
-                import time
-                start = time.time()
                 info_gps_ps = update_full_marginals(info_gps_ps)
-                end = time.time()
-                print('update marginals 1: ' + str(end-start) + ' seconds.')
-                start = time.time()
                 info_gps_ps = update_full_Factors_only_test_factors(info_gps_ps, 0.1, \
                                 minimize = True, no_negative_variances_nor_nands = True)
-                end = time.time()
-                print('update full factors: ' + str(end-start) + ' seconds.')
                 """
                 fun_log('update_full_Factors_only_test_factors', log, \
                     {'a[ghfhat][ :, :, :, 0, 0 ]': info_gps_ps['ghfhat'][ :, :, :, 0, 0 ], \
@@ -849,10 +836,7 @@ def compute_acq_fun_wrt_test_points_time(X_test, obj_model_dict, con_models_dict
                      'a[h_c_hfhat][ :, :, : ]': info_gps_ps['h_c_hfhat'][ :, :, : ], \
                      'a[m]': info_gps_ps['m'], 'a[V]': info_gps_ps['V'], 'a[m_cons]': info_gps_ps['m_cons'], 'a[V_cons]': info_gps_ps['V_cons']})
                 """
-                start = time.time()
                 info_gps_ps = update_full_marginals(info_gps_ps)
-                end = time.time()
-                print('update marginals 2: ' + str(end-start) + ' seconds.')
                 """
                 fun_log('update_full_marginals', log, \
                         {'Vinv_cons' : info_gps_ps['Vinv_cons'], \

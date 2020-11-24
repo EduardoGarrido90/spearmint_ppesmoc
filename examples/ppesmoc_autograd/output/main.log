@@ -824,3 +824,326 @@ Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
 
 Computing PPESMOC for c2, c1, mocotoy_2, mocotoy_1
 Optimizing PPESMOC with L_BFGS_B
+Fitting GP to 3 data for c2 task...
+Fitting GP to 3 data for c1 task...
+Fitting GP to 3 data for c2 task...
+Fitting GP to 3 data for c1 task...
+Fitting GP to 3 data for mocotoy_2 task...
+Fitting GP to 3 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 55 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Computing PPESMOC for c2, c1, mocotoy_2, mocotoy_1
+Optimizing PPESMOC with L_BFGS_B
+Fitting GP to 3 data for c2 task...
+Fitting GP to 3 data for c1 task...
+Fitting GP to 3 data for mocotoy_2 task...
+Fitting GP to 3 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 25 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Computing PPESMOC for c2, c1, mocotoy_2, mocotoy_1
+Optimizing PPESMOC with L_BFGS_B
+Fitting GP to 3 data for c2 task...
+Fitting GP to 3 data for c1 task...
+Fitting GP to 3 data for mocotoy_2 task...
+Fitting GP to 3 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 82 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Computing PPESMOC for c2, c1, mocotoy_2, mocotoy_1
+Optimizing PPESMOC with L_BFGS_B
+Fitting GP to 3 data for c2 task...
+Fitting GP to 3 data for c1 task...
+Fitting GP to 3 data for mocotoy_2 task...
+Fitting GP to 3 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 12 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Computing PPESMOC for c2, c1, mocotoy_2, mocotoy_1
+Optimizing PPESMOC with L_BFGS_B
+Fitting GP to 3 data for c2 task...
+Fitting GP to 3 data for c1 task...
+Fitting GP to 3 data for mocotoy_2 task...
+Fitting GP to 3 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 38 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Computing PPESMOC for c2, c1, mocotoy_2, mocotoy_1
+Optimizing PPESMOC with L_BFGS_B
+Fitting GP to 3 data for c2 task...
+Fitting GP to 3 data for c1 task...
+Fitting GP to 3 data for mocotoy_2 task...
+Fitting GP to 3 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 31 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Computing PPESMOC for c2, c1, mocotoy_2, mocotoy_1
+Optimizing PPESMOC with L_BFGS_B
+
+Suggestion: task(s) c2,c1,mocotoy_2,mocotoy_1 at location
+                NAME          TYPE       VALUE
+                ----          ----       -----
+                X             float      -6.459507   
+                                         -8.212963   
+                                         8.613708    
+                Y             float      9.635480    
+                                         2.753927    
+                                         1.974162    
+Current time: 2020-11-24 10:02:14
+Status: 1 pending, 3 complete.
+ID(s) of pending job(s) for c2, c1, mocotoy_2, mocotoy_1: 4
+
+
+Current time: 2020-11-24 10:02:17
+Status: 1 pending, 4 complete.
+ID(s) of pending job(s) for c2, c1, mocotoy_2, mocotoy_1: 5
+
+
+Current time: 2020-11-24 10:02:20
+Status: 1 pending, 5 complete.
+ID(s) of pending job(s) for c2, c1, mocotoy_2, mocotoy_1: 6
+
+
+Fitting GP to 6 data for c2 task...
+Fitting GP to 6 data for c1 task...
+Fitting GP to 6 data for mocotoy_2 task...
+Fitting GP to 6 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 48 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Computing PPESMOC for c2, c1, mocotoy_2, mocotoy_1
+Optimizing PPESMOC with L_BFGS_B
+Fitting GP to 6 data for c2 task...
+Fitting GP to 6 data for c1 task...
+Fitting GP to 6 data for mocotoy_2 task...
+Fitting GP to 6 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 30 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Computing PPESMOC for c2, c1, mocotoy_2, mocotoy_1
+Optimizing PPESMOC with L_BFGS_B
+Fitting GP to 6 data for c2 task...
+Fitting GP to 6 data for c1 task...
+Fitting GP to 6 data for mocotoy_2 task...
+Fitting GP to 6 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 41 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Computing PPESMOC for c2, c1, mocotoy_2, mocotoy_1
+Optimizing PPESMOC with L_BFGS_B
+Fitting GP to 6 data for c2 task...
+Fitting GP to 6 data for c1 task...
+Fitting GP to 6 data for mocotoy_2 task...
+Fitting GP to 6 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 51 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Computing PPESMOC for c2, c1, mocotoy_2, mocotoy_1
+Optimizing PPESMOC with L_BFGS_B
+
+Suggestion: task(s) c2,c1,mocotoy_2,mocotoy_1 at location
+                NAME          TYPE       VALUE
+                ----          ----       -----
+                X             float      0.441604    
+                                         2.932167    
+                                         8.318552    
+                Y             float      0.765820    
+                                         0.109579    
+                                         8.536812    
+Current time: 2020-11-24 10:51:48
+Status: 1 pending, 6 complete.
+ID(s) of pending job(s) for c2, c1, mocotoy_2, mocotoy_1: 7
+
+
+Current time: 2020-11-24 10:51:51
+Status: 1 pending, 7 complete.
+ID(s) of pending job(s) for c2, c1, mocotoy_2, mocotoy_1: 8
+
+
+Current time: 2020-11-24 10:51:54
+Status: 1 pending, 8 complete.
+ID(s) of pending job(s) for c2, c1, mocotoy_2, mocotoy_1: 9
+
+
+Fitting GP to 9 data for c2 task...
+Fitting GP to 9 data for c1 task...
+Fitting GP to 9 data for mocotoy_2 task...
+Fitting GP to 9 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 144 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Computing PPESMOC for c2, c1, mocotoy_2, mocotoy_1
+Optimizing PPESMOC with L_BFGS_B
+
+Suggestion: task(s) c2,c1,mocotoy_2,mocotoy_1 at location
+                NAME          TYPE       VALUE
+                ----          ----       -----
+                X             float      6.177410    
+                                         2.675716    
+                                         1.133293    
+                Y             float      10.000000   
+                                         4.199362    
+                                         9.876667    
+Current time: 2020-11-24 10:54:24
+Status: 1 pending, 9 complete.
+ID(s) of pending job(s) for c2, c1, mocotoy_2, mocotoy_1: 10
+
+
+Current time: 2020-11-24 10:54:27
+Status: 1 pending, 10 complete.
+ID(s) of pending job(s) for c2, c1, mocotoy_2, mocotoy_1: 11
+
+
+Current time: 2020-11-24 10:54:30
+Status: 1 pending, 11 complete.
+ID(s) of pending job(s) for c2, c1, mocotoy_2, mocotoy_1: 12
+
+
+Fitting GP to 12 data for c2 task...
+Fitting GP to 12 data for c1 task...
+Fitting GP to 12 data for mocotoy_2 task...
+Fitting GP to 12 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 301 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Computing PPESMOC for c2, c1, mocotoy_2, mocotoy_1
+Optimizing PPESMOC with L_BFGS_B
+
+Suggestion: task(s) c2,c1,mocotoy_2,mocotoy_1 at location
+                NAME          TYPE       VALUE
+                ----          ----       -----
+                X             float      0.206400    
+                                         9.956446    
+                                         9.853770    
+                Y             float      5.755036    
+                                         0.477541    
+                                         7.087323    
+Current time: 2020-11-24 10:57:55
+Status: 1 pending, 12 complete.
+ID(s) of pending job(s) for c2, c1, mocotoy_2, mocotoy_1: 13
+
+
+Current time: 2020-11-24 10:57:58
+Status: 1 pending, 13 complete.
+ID(s) of pending job(s) for c2, c1, mocotoy_2, mocotoy_1: 14
+
+
+Current time: 2020-11-24 10:58:02
+Status: 1 pending, 14 complete.
+ID(s) of pending job(s) for c2, c1, mocotoy_2, mocotoy_1: 15
+
+
+Fitting GP to 15 data for c2 task...
+Fitting GP to 15 data for c1 task...
+Fitting GP to 15 data for mocotoy_2 task...
+Fitting GP to 15 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 392 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Computing PPESMOC for c2, c1, mocotoy_2, mocotoy_1
+Optimizing PPESMOC with L_BFGS_B
+
+Suggestion: task(s) c2,c1,mocotoy_2,mocotoy_1 at location
+                NAME          TYPE       VALUE
+                ----          ----       -----
+                X             float      -2.373935   
+                                         0.069019    
+                                         1.893639    
+                Y             float      -9.155840   
+                                         7.978763    
+                                         3.582293    
+Current time: 2020-11-24 10:59:53
+Status: 1 pending, 15 complete.
+ID(s) of pending job(s) for c2, c1, mocotoy_2, mocotoy_1: 16
+
+
+Current time: 2020-11-24 10:59:56
+Status: 1 pending, 16 complete.
+ID(s) of pending job(s) for c2, c1, mocotoy_2, mocotoy_1: 17
+
+
+Current time: 2020-11-24 10:59:59
+Status: 1 pending, 17 complete.
+ID(s) of pending job(s) for c2, c1, mocotoy_2, mocotoy_1: 18
+
+
+Fitting GP to 18 data for c2 task...
+Fitting GP to 18 data for c1 task...
+Fitting GP to 18 data for mocotoy_2 task...
+Fitting GP to 18 data for mocotoy_1 task...
+
+Solving Multi-objective global optimization of posterior means with constraints!
+
+Constrained Multi-objective Global Optimization finished. 				Size of the pareto set: 452 opt.
+
+
+Getting suggestion for c2, c1, mocotoy_2, mocotoy_1...
+
+Computing PPESMOC for c2, c1, mocotoy_2, mocotoy_1
+Optimizing PPESMOC with L_BFGS_B

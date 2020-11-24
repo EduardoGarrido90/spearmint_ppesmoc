@@ -182,6 +182,7 @@
 # to enter into this License and Terms of Use on behalf of itself and
 # its Institution.
 
+import time
 import numpy          as np
 import numpy.random   as npr
 import scipy.stats    as sps
@@ -196,24 +197,19 @@ import sys
 from collections import defaultdict
 from spearmint.grids import sobol_grid
 from spearmint.acquisition_functions.abstract_acquisition_function import AbstractAcquisitionFunction
-from spearmint.acquisition_functions.PPESMOC_gradients import compute_acq_fun_wrt_test_points
 from spearmint.utils.numerics import logcdf_robust
+from spearmint.acquisition_functions.PPESMOC_gradients import compute_acq_fun_wrt_test_points
 from spearmint.models.gp import GP
 from spearmint.utils.moop            import MOOP_basis_functions
 from spearmint.utils.moop            import _cull_algorithm
 from spearmint.utils.moop            import _compute_pareto_front_and_set_summary_x_space
 from scipy.spatial.distance import cdist
 from spearmint.kernels import kernel_utils
+from autograd import grad
 
 
 from spearmint.models.abstract_model import function_over_hypers
-from autograd import jacobian
-from autograd import grad
 import logging
-
-import traceback
-import warnings
-import sys
 
 try:
     import nlopt
@@ -241,25 +237,10 @@ PESM_OPTION_DEFAULTS  = {
     'pesm_nsga2_epochs' : 100
     }
 
-
-def warn_with_traceback(message, category, filename, lineno, file=None, line=None):
-    log = file if hasattr(file,'write') else sys.stderr
-    traceback.print_stack(file=log)
-    log.write(warnings.formatwarning(message, category, filename, lineno, line))
-
-def write_log(fname, froute, ret_variables):
-    log = open(froute, 'a')
-    log.write('=========================\n')
-    log.write(fname + '\n')
-    log.write('=========================\n')
-    for key, value in ret_variables.items():
-        log.write('%s == %s \n' %(key, value))
-    log.write('=========================\n\n')
-    log.close()
-
 """
 FOR GP MODELS ONLY
 """
+
 # get samples of the solution to the problem
 
 def sample_solution(num_dims, objectives_gp, constraint_gps):
@@ -1873,8 +1854,7 @@ def update_full_Factors_only_test_factors(a, damping, minimize=True, no_negative
 
     c_m = np.zeros((c, n_pset, n_test))
     c_v = np.zeros((c, n_pset, n_test))
-    
-    # Update marginals: a['m'] , a['V']
+
     n_task = 0 
     for obj in all_tasks:
         m_test[ n_task, :, : ] = np.tile(a['m'][ obj ][ n_obs + n_pset : n_total ], n_pset).reshape((n_pset, n_test))
@@ -2922,156 +2902,6 @@ def find_global_optimum_GP_sample(fun, num_dims, grid, minimize = True):
 
 	return x_opt
 
-def compute_unconstrained_variances_and_init_acq_fun(obj_models_dict, cand, con_models):
-            unconstrainedVariances = dict()
-            constrainedVariances = dict()
-            acq = dict()
-
-            for obj in obj_models_dict:
-                unconstrainedVariances[ obj ] = obj_models_dict[ obj ].predict(cand, full_cov=True)[ 1 ]
-                np.fill_diagonal(unconstrainedVariances[ obj ], np.diagonal(unconstrainedVariances[ obj ]) + obj_models_dict[ obj ].noise_value())
-
-            for cons in con_models:
-                unconstrainedVariances[ cons ] = con_models[ cons ].predict(cand, full_cov=True)[ 1 ]
-                np.fill_diagonal(unconstrainedVariances[ cons ], np.diagonal(unconstrainedVariances[ cons ]) + con_models[ cons ].noise_value())
-
-            for t in unconstrainedVariances:
-                acq[t] = 0
-
-            return acq, unconstrainedVariances, constrainedVariances
-
-#Include test marginals.
-def update_full_marginals(self, a):
-                n_obs = a['n_obs']
-                n_total = a['n_total']
-                n_pset = a['n_pset']
-                n_test = a['n_test']
-                objectives = a['objs']
-                constraints = a['cons']
-                all_tasks = objectives
-                all_constraints = constraints
-                n_objs = len(all_tasks)
-                n_cons = len(all_constraints)
-                ntask = 0
-
-                # Updating constraint distribution marginals.
-                #vTilde_back = defaultdict(lambda: np.zeros((n_total, n_total)))
-                #vTilde_cons_back = defaultdict(lambda: np.zeros((n_total, n_total)))
-                #import pdb; pdb.set_trace();
-                for cons in all_constraints:
-
-                        # Summing all the factors into the diagonal. Reescribir.
-
-                        vTilde_cons = np.zeros((n_total,n_total))
-                        vTilde_cons[ np.eye(n_total).astype('bool') ] = np.append(np.append(np.sum(a['a_c_hfhat'][ :, : , ntask ], axis = 1), \
-                                np.sum(a['c_c_hfhat'][ :, : , ntask ], axis = 1) + a['ehfhat'][ :, ntask ]), \
-                                np.sum(a['g_c_hfhat'][ :, : , ntask ], axis = 1))
-
-                        mTilde_cons = np.append(np.append(np.sum(a['b_c_hfhat'][ :, : , ntask ], axis = 1), \
-                                np.sum(a['d_c_hfhat'][ :, : , ntask ], axis = 1) + a['fhfhat'][ :, ntask ]), \
-                                 np.sum(a['h_c_hfhat'][ :, : , ntask ], axis = 1))
-
-                        # Natural parameter conversion and update of the marginal variance matrices.
-
-                        a['Vinv_cons'][cons] = a['VpredInv_cons'][cons] + vTilde_cons
-                        a['V_cons'][cons] = matrixInverse(a['VpredInv_cons'][cons] + vTilde_cons)
-
-                        # Natural parameter conversion and update of the marginal mean vector.
-
-                        a['m_nat_cons'][cons] = np.dot(a['VpredInv_cons'][cons], a['mPred_cons'][cons]) + mTilde_cons
-                        a['m_cons'][cons] = np.dot(a['V_cons'][cons], a['m_nat_cons'][ cons ])
-
-                        ntask = ntask + 1
-                ntask = 0
-                for obj in all_tasks:
-
-                        vTilde = np.zeros((n_total,n_total))
-
-                        vTilde[ np.eye(n_total).astype('bool') ] = np.append(np.append(np.sum(a['ahfhat'][ :, : , ntask, 0, 0 ], axis = 1), \
-                                np.sum(a['ahfhat'][ :, : , ntask, 1, 1 ], axis = 0) + np.sum(a['chfhat'][ :, : , ntask, 0, 0 ], axis = 1) + \
-                                np.sum(a['chfhat'][ :, : , ntask, 1, 1 ], axis = 0) + np.sum(a['ghfhat'][ :, : , ntask, 1, 1 ], axis = 0)), \
-                                np.sum(a['ghfhat'][ :, : , ntask, 0, 0 ], axis = 1))
-
-                        vTilde[ n_obs : n_obs + n_pset, n_obs : n_obs + n_pset ] = vTilde[ n_obs : n_obs + n_pset, n_obs : n_obs + n_pset ] + \
-                                a['chfhat'][ :, : , ntask, 0, 1 ] + a['chfhat'][ :, : , ntask, 1, 0 ].T
-
-                        vTilde[ 0 : n_obs, n_obs : n_obs + n_pset ] = a['ahfhat'][ :, :, ntask, 0, 1]
-                        vTilde[ n_obs : n_obs + n_pset, 0 : n_obs ] =  a['ahfhat'][ :, :, ntask, 0, 1].transpose()
-
-                        vTilde[ n_obs + n_pset : n_total, n_obs : n_obs + n_pset ] = a['ghfhat'][ :, :, ntask, 0, 1]
-                        vTilde[ n_obs : n_obs + n_pset, n_obs + n_pset : n_total ] =  a['ghfhat'][ :, :, ntask, 0, 1].transpose()
-
-                        a['Vinv'][obj] = a['VpredInv'][obj] + vTilde
-                        a['V'][obj] = matrixInverse(a['VpredInv'][obj] + vTilde)
-
-                        mTilde = np.append(np.append(np.sum(a['bhfhat'][ :, : , ntask, 0 ], axis = 1),
-                                np.sum(a['bhfhat'][ :, : , ntask, 1 ], axis = 0) + np.sum(a['hhfhat'][ :, : , ntask, 1 ], axis = 0) +\
-                                np.sum(a['dhfhat'][ :, : , ntask, 0 ], axis = 1) + np.sum(a['dhfhat'][ :, : , ntask, 1 ], axis = 0)), \
-                                np.sum(a['hhfhat'][ :, : , ntask, 0 ], axis = 1))
-
-                        a['m_nat'][obj] = np.dot(a['VpredInv'][obj], a['mPred'][obj]) + mTilde
-                        a['m'][obj] = np.dot(a['V'][obj], a['m_nat'][ obj ])
-
-                        ntask = ntask + 1
-
-                return a
-
-def get_test_predictive_distributions(self, a):
-                n_obs = a['n_obs']
-                n_pset = a['n_pset']
-                n_test = a['n_test']
-                n_total = a['n_total']
-                q = len(a['objs'])
-                c = len(a['cons'])
-                predictive_distributions = {
-                        'mf' : defaultdict(lambda: np.zeros(n_test)),
-                        'vf' : defaultdict(lambda: np.zeros((n_test, n_test))),
-                        'mc' : defaultdict(lambda: np.zeros(n_test)),
-                        'vc' : defaultdict(lambda: np.zeros((n_test, n_test))),
-                }
-                for obj in a['objs'].keys():
-                        predictive_distributions['mf'][ obj ] = a['m'][ obj ][ n_obs + n_pset : n_total ]
-                        predictive_distributions['vf'][ obj ] = a['V'][ obj ][ n_obs + n_pset : n_total , n_obs + n_pset : n_total ]
-                for cons in a['cons'].keys():
-                        predictive_distributions['mc'][ cons ] = a['m_cons'][ cons ][ n_obs + n_pset : n_total ]
-                        predictive_distributions['vc'][ cons ] = a['V_cons'][ cons ][ n_obs + n_pset : n_total , n_obs + n_pset : n_total ]
-
-
-                return predictive_distributions, a
-
-def compute_PPESMOC_approximation(self, predictionEP, obj_models_dict, con_models, unconstrainedVariances, constrainedVariances, acq):
-
-                predictionEP_obj = predictionEP[ 'vf' ]
-                predictionEP_cons = predictionEP[ 'vc' ]
-
-                # DHL changed fill_diag, because that was updating the a structure and screwing things up later on
-
-                for obj in obj_models_dict:
-                    predictionEP_obj[ obj ] = predictionEP_obj[ obj ] + np.eye(predictionEP_obj[ obj ].shape[ 0 ]) * obj_models_dict[ obj ].noise_value()
-                    constrainedVariances[ obj ] = predictionEP_obj[ obj ]
-
-                for cons in con_models:
-                    predictionEP_cons[ cons ] = predictionEP_cons[ cons ] + np.eye(predictionEP_cons[ obj ].shape[ 0 ]) * con_models[ cons ].noise_value()
-                    constrainedVariances[ cons ] = predictionEP_cons[ cons ]
-
-                # We only care about the variances because the means do not affect the entropy
-                # The summation of the acq of the tasks (t) is done in a higher method. Do no do it here.
-
-                for t in unconstrainedVariances:
-
-                    # DHL replaced np.log(np.linalg.det()) to avoid precision errors
-
-                    value = 0.5 * np.linalg.slogdet(unconstrainedVariances[t])[ 1 ] - 0.5 * np.linalg.slogdet(constrainedVariances[t])[ 1 ]
-
-                    # We set negative values of the acquisition function to zero  because the 
-                    # entropy cannot be increased when conditioning
-
-                    value = np.max(value, 0)
-
-                    acq[t] += value
-
-                return acq
-
 class PPESMOC(AbstractAcquisitionFunction):
 
 	def __init__(self, num_dims, verbose=True, input_space=None, grid=None, opt = None):
@@ -3211,16 +3041,6 @@ class PPESMOC(AbstractAcquisitionFunction):
 		self._verify_models_same_state(con_models)
 		#assert compute_grad #Not necessary for plots.
 
-        #Function used to debug the results of a function.
-        def print_args_debug(function_name, file_name, return_variables):
-            log = open(file_name, "a")
-            log.write('============================\n')
-            log.write('Results of ' + function_name + '\n')
-            for key, value in return_variables.items():
-                log.write("%s == %s" %(key, value))
-            log.write('============================\n')
-            log.close()
-            
 	###############################################################################
 	# acquistion: Function where the PPESMOC acquisition function is computed.
 	#
@@ -3235,8 +3055,7 @@ class PPESMOC(AbstractAcquisitionFunction):
 	# total_acq: Acquisition function.
 	###############################################################################
 
-	def acquisition(self, obj_model_dict, con_model_dict, cand, current_best, compute_grad, minimize=True, tasks=None, tasks_values=None,
-                            test=True):
+	def acquisition(self, obj_model_dict, con_model_dict, cand, current_best, compute_grad, minimize=True, tasks=None, tasks_values=None):
 		obj_models = obj_model_dict.values() #Some redefinitions.
 		models = obj_models
 
@@ -3244,14 +3063,11 @@ class PPESMOC(AbstractAcquisitionFunction):
 		
 		# We check if we have already computed the EP approximation. If so, we reuse the result obtained
 		# and the pareto set samples.
-                obj_model_dict_copy_gradients = obj_model_dict.copy() 
-                con_model_dict_copy_gradients = con_model_dict.copy() 
 
 		key = tuple([obj_model_dict[ obj ].state for obj in obj_model_dict])
 
 		pareto_set = self.sample_pareto_sets(models, con_model_dict, key) #We sample a dictionary of Pareto Sets.
-                pareto_set_copy_gradients = pareto_set.copy()
-               
+                
 		self.sampled_pareto_set = pareto_set
 		# We approximate the factors that do not depend on the candidate by using EP.
                 if cand.shape[0] > 1:   #This is to show in the grid.
@@ -3265,25 +3081,25 @@ class PPESMOC(AbstractAcquisitionFunction):
 
                     return total_acq
                 else:
-                    cand_test = cand.copy()
 		    cand = cand.reshape((self.options['batch_size'], self.num_dims)) 
 
 		    #print "Computing PPESMOC acquisition function"
 
 		    #Here is where the PPESMOC acqusition function is computed (aka substraction of variance predictive distributions const. and unconst.)
 		    #The omegas are the EP factors.
-		    acq_dict, list_a = self.compute_ep(pareto_set, obj_model_dict, minimize, con_model_dict, key, cand, self.max_ep_iterations)
+                    
+   	            acq_dict, list_a = self.compute_ep(pareto_set, obj_model_dict, minimize, con_model_dict, key, \
+                        cand, self.max_ep_iterations)
+               
+            	    # by default, sum the PESC contribution for all tasks
+                    if tasks is None:
+  	                tasks = acq_dict.keys()
 
-        	    # by default, sum the PESC contribution for all tasks
-               	    if tasks is None:
-		        tasks = acq_dict.keys()
+  	            # Compute the total acquisition function for the tasks of interests
 
-		    # Compute the total acquisition function for the tasks of interests
-
-		    total_acq = 0.0
-		    for task in tasks:
-	    	        total_acq += acq_dict[ task ]
-                    #write_log('total_acq PPESMOC', self.options['log_route_acq_funs'], {'acq' : total_acq})            
+  	            total_acq = 0.0
+  	            for task in tasks:
+      	                total_acq += acq_dict[ task ]
 
 		    #Compute the gradients of the acquisition function w.r.t the test points (cand).
 		    #EP factors are traspassed, by the way, I could have traspased also all the computed matrices of PPESMOC,
@@ -3296,93 +3112,31 @@ class PPESMOC(AbstractAcquisitionFunction):
                     #                print((ini - fini) / (2 * 1e-3))
                     #
                     #                grad = self.compute_gradients_entropy_constrained_wrt_test_points_for_task(True, obj_model_dict[ obj_model_dict.keys()[ 1 ] ], obj_model_dict.keys()[ 1 ], cand, list_a[ str(0) ])
+
+#                    import numpy as np
+#                    import cProfile, pstats, io
+#
+#                    pr = cProfile.Profile()
+#                    pr.enable()
+#                    pr.disable()
+#                    ps = pstats.Stats(pr)
+#                    ps.print_stats()
+
+                    #result = compute_acq_fun_wrt_test_points(cand, obj_model_dict, con_model_dict, pareto_set, list_a, tasks)
+                    #import pdb; pdb.set_trace()
+
                     if not compute_grad:
                         return total_acq
                     else:
-                        #Aqui es donde hay que devolver los gradientes pues es donde se calculaban antes. Tienes toda la info.
-                        #compute_gradients_acq_fun_xtests = jacobian(compute_acq_fun_wrt_test_points)  
+	                #acq_grad = self.compute_gradients_wrt_test_points(obj_model_dict, con_model_dict, pareto_set, tasks, cand, list_a)
+
+                        #self.test_full_acquisition_gradients(pareto_set, obj_model_dict, minimize, con_model_dict, key, tasks, cand)
+
                         compute_gradients_acq_fun_xtests = grad(compute_acq_fun_wrt_test_points)  
-
-                        #TIME TEST: NUMPY FUNCTION VS AUTOGRAD FUNCTION. 
-                        if(test):
-                            import pdb; pdb.set_trace();
-                            import time
-                            from spearmint.acquisition_functions.PPESMOC_gradients_time import compute_acq_fun_wrt_test_points_time
-                            eps = 1e-4
-                            time_numpy = np.zeros(10)
-                            time_autograd = np.zeros(10)
-                            time_grad_autograd = np.zeros(10)
-                            time_autograd_time = np.zeros(10)
-                            time_grad_autograd_time = np.zeros(10)
-                            for i in range(10):
-                                start = time.time()
-                                self.compute_ep(pareto_set, obj_model_dict, minimize, con_model_dict, key, cand + np.random.uniform(0, 1e-1), self.max_ep_iterations)
-                                end = time.time()
-                                print('Elapsed time for Numpy function: ' + str(end-start) + ' seconds.')
-                                time_numpy[i] = str(end-start)
-                                start = time.time()
-                                test_acq = compute_acq_fun_wrt_test_points(cand + np.random.uniform(0, 1e-1), obj_model_dict,\
-                                        con_model_dict, pareto_set, list_a, tasks)
-                                end = time.time()
-                                print('Elapsed time for Autograd function: ' + str(end-start) + ' seconds.')
-                                time_autograd[i] = str(end-start)
-                                start = time.time()
-                                test_acq_grad = compute_gradients_acq_fun_xtests(cand + np.random.uniform(0, 1e-1), obj_model_dict, con_model_dict, pareto_set, list_a, tasks)
-                                end = time.time()
-                                print('Elapsed time for Autograd gradients function: ' + str(end-start) + ' seconds.')
-                                time_grad_autograd[i] = str(end-start)
-                                compute_gradients_acq_fun_xtests_time = grad(compute_acq_fun_wrt_test_points_time)
-                                start = time.time()
-                                test_acq_time = compute_acq_fun_wrt_test_points_time(cand + np.random.uniform(0, 1e-1), obj_model_dict, con_model_dict, pareto_set, list_a, tasks)
-                                end = time.time()
-                                print('Elapsed time for Autograd time enhanced function: ' + str(end-start) + ' seconds.')
-                                time_autograd_time[i] = str(end-start)
-                                start = time.time()
-                                test_acq_grad_time = compute_gradients_acq_fun_xtests_time(cand + np.random.uniform(0, 1e-1), obj_model_dict, con_model_dict, pareto_set, list_a, tasks)
-                                end = time.time()
-                                print('Elapsed time for Autograd gradients time enhanced function: ' + str(end-start) + ' seconds.')
-                                time_grad_autograd_time[i] = str(end-start)
-                                #assert np.abs(test_acq_time-test_acq) < 1e-3
-                                #assert np.all(np.abs(test_acq_grad-test_acq_grad_time) < 1e-1)
-                            print('Mean numpy time: ' + str(np.mean(time_numpy)) + ' seconds.')
-                            print('Std. numpy time: ' + str(np.std(time_numpy)) + ' seconds.')
-                            print('Mean autograd time: ' + str(np.mean(time_autograd)) + ' seconds.')
-                            print('Std. autograd time: ' + str(np.std(time_autograd)) + ' seconds.')
-                            print('Mean grad_autograd time: ' + str(np.mean(time_grad_autograd)) + ' seconds.')
-                            print('Std. grad_autograd time: ' + str(np.std(time_grad_autograd)) + ' seconds.')
-                            print('Mean autograd_time time: ' + str(np.mean(time_autograd_time)) + ' seconds.')
-                            print('Std. autograd_time time: ' + str(np.std(time_autograd_time)) + ' seconds.')
-                            print('Mean grad_autograd_time time: ' + str(np.mean(time_grad_autograd_time)) + ' seconds.')
-                            print('Std. grad_autograd_time time: ' + str(np.std(time_grad_autograd_time)) + ' seconds.')
-                            import pdb; pdb.set_trace();
-
-                            import pdb; pdb.set_trace();
-
-                        """
-                        warnings.showwarning = warn_with_traceback
-                        warnings.simplefilter("always")
-                        warnings.simplefilter("error")
-                        warnings.simplefilter("ignore", DeprecationWarning)
-                        total_acq_autograd = compute_acq_fun_wrt_test_points(cand, obj_model_dict_copy_gradients, con_model_dict_copy_gradients, \
-                            pareto_set_copy_gradients, list_a, tasks, self.options['log_route_acq_funs'], write_log) #Debug.
-                        print total_acq_autograd
-                        #Coincide casi totalmente!
-                        """
-                        #Test.
-                        #autograd_acq = compute_acq_fun_wrt_test_points(cand, obj_model_dict, con_model_dict, pareto_set, list_a, tasks,
-                                                                        #self.options['log_route_acq_funs'], write_log)
                         acq_grad = compute_gradients_acq_fun_xtests(cand, obj_model_dict, con_model_dict, pareto_set, list_a, tasks)#,
-                                                                #self.options['log_route_acq_funs'], write_log) 
-                        #Testing autograd acquisition function. It must give the same value than PPESMOC.
-                        #assert total_acq == total_acq_autograd Gives a diference of 1e-12. Can be OK.
 
-                        #Testing autograd gradients.    
-                        #import pdb; pdb.set_trace();
-                        #self.test_full_acquisition_gradients(pareto_set, obj_model_dict, minimize, con_model_dict, key, tasks, cand, \
-                        #self.options['log_route_acq_funs'], write_log, compute_gradients_acq_fun_xtests, compute_acq_fun_wrt_test_points)
-    
 	                return total_acq, acq_grad
-
+    
         # This function is only for testing that the gradient is OK
 
 	def entropy_constrained_wrt_test_points_for_task(self, is_objective, task_model, task, cand, a, inc = 0.0):
@@ -3808,8 +3562,6 @@ class PPESMOC(AbstractAcquisitionFunction):
 
 		acq, unconstrainedVariances, constrainedVariances = self.compute_unconstrained_variances_and_init_acq_fun \
 										(obj_model_dict, cand, con_models_dict)
-                write_log('compute_unconstrained_variances_and_init_acq_fun PPESMOC', self.options['log_route_acq_funs'], \
-                                {'acq' : acq, 'unconstrainedVariances' : unconstrainedVariances, 'constrainedVariances' : constrainedVariances})
 
 		acq_dict, list_a = self.compute_and_evaluate_acquisition_function_all_factors(pareto_set, obj_model_dict, minimize, con_models_dict, \
 					key, cand, self.options, acq, unconstrainedVariances, constrainedVariances, max_ep_iterations)
@@ -3826,7 +3578,6 @@ class PPESMOC(AbstractAcquisitionFunction):
                         	acq, list_a[ str(i) ] = self.ppesmoc_computation_for_pareto_set_sample(obj_model_dict, pareto_set[ str(i) ], \
 								minimize, con_models_dict, self.input_space, cand, \
                                                 		unconstrainedVariances, constrainedVariances, acq, opt, key, i, max_ep_iterations)
-                                write_log('compute_PPESMOC_approximation PPESMOC', self.options['log_route_acq_funs'], {'acq' : acq})
 
 		#Validate this index. I think that it enters in conflict with the previous index.
 		#Anyway, it would be easy to see, because it is only a change in scale.
@@ -3837,7 +3588,7 @@ class PPESMOC(AbstractAcquisitionFunction):
             	for t in acq:
                 	if np.any(np.isnan(acq[t])):
 	                    raise Exception("Acquisition function containts NaN for task %s" % t)
-                write_log('BB acqs PPESMOC', self.options['log_route_acq_funs'], {'acq' : acq})
+
 		return acq, list_a
 
 	def compute_previous_operations_before_ep_algorithm(self, obj_model_dict, con_models_dict, pareto_set, cand):
@@ -3849,17 +3600,12 @@ class PPESMOC(AbstractAcquisitionFunction):
                         #       all_tasks, all_constraints, pareto_set, cand)
                         X, n_obs, n_pset, n_test, n_total = build_set_of_points_that_conditions_GPs(obj_model_dict, con_models_dict, \
                                 pareto_set, cand)
-                        write_log('build_set_of_points_that_conditions_GPs PPESMOC', self.options['log_route_acq_funs'], \
-                                {'X' : X, 'n_obs' : n_obs, 'n_pset' : n_pset, 'n_test' : n_test, 'n_total' : n_total})
                         q = len(all_tasks)
                         c = len(all_constraints)
 
                         #Computation of predictive unconditional distributions of the GPs.
                         mPred, Vpred, cholVpred, VpredInv, cholKstarstar, mPred_cons, Vpred_cons, cholVpred_cons, VpredInv_cons, cholKstarstar_cons = \
                                 build_unconditioned_predictive_distributions(all_tasks, all_constraints, X)
-                        write_log('build_unconditioned_predictive_distributions PPESMOC', self.options['log_route_acq_funs'], \
-                            {'mPred' : mPred, 'Vpred' : Vpred, 'VpredInv' : VpredInv, 'mPred_cons' : mPred_cons, \
-                            'Vpred_cons' : Vpred_cons, 'VpredInv_cons' : VpredInv_cons})
                         jitter = get_jitter(obj_model_dict, con_models_dict)
 
                         # We create the posterior approximation. This needs info for both the factors dependant and not dependant on X.
@@ -3877,6 +3623,7 @@ class PPESMOC(AbstractAcquisitionFunction):
             a = self.compute_previous_operations_before_ep_algorithm(obj_model_dict, con_models_dict, pareto_set, cand)
 
             # We reuse the approximate factors if there is a previous EP solution
+
             if key in self.reuse_EP_solution:
 
                 a_old = dict_par_points[ ps_index ]
@@ -3888,20 +3635,16 @@ class PPESMOC(AbstractAcquisitionFunction):
                 a['fhfhat'] = a_old['fhfhat'].copy()   
                 a['ghfhat'] = a_old['ghfhat'].copy() * 0.0 # We set the previous parameters for test points to zero
                 a['hhfhat'] =  a_old['hhfhat'].copy() * 0.0 # We set the previous parameters for test points to zero
+                a['g_c_hfhat'] = a_old['g_c_hfhat'].copy() * 0.0 # We set the previous parameters for test points to zero  
+                a['h_c_hfhat'] = a_old['h_c_hfhat'].copy() * 0.0  # We set the previous parameters for test points to zero  
                 a['a_c_hfhat'] = a_old['a_c_hfhat'].copy()   
                 a['b_c_hfhat'] = a_old['b_c_hfhat'].copy()   
-                a['c_c_hfhat'] = a_old['c_c_hfhat'].copy()   
-                a['d_c_hfhat'] = a_old['d_c_hfhat'].copy()   
-                a['g_c_hfhat'] = a_old['g_c_hfhat'].copy() * 0.0 # We set the previous parameters for test points to zero
-                a['h_c_hfhat'] = a_old['h_c_hfhat'].copy() * 0.0  # We set the previous parameters for test points to zero
+                a['c_c_hfhat'] = a_old['c_c_hfhat'].copy() 
+                a['d_c_hfhat'] = a_old['d_c_hfhat'].copy() 
 
                 # We try to recompute the posterior. If that fails we start from scratch
                 try:
-                    import time
-                    start = time.time()
                     a = self.update_full_marginals(copy.deepcopy(a))
-                    end = time.time()
-                    print('update marginals 1: ' + str(end-start) + ' seconds.')
                 except:
                     print("Failed computation from EP previous solution")
                     a = self.compute_previous_operations_before_ep_algorithm(obj_model_dict, con_models_dict, pareto_set, cand)
@@ -3910,132 +3653,59 @@ class PPESMOC(AbstractAcquisitionFunction):
                 raise Exception("To have sense, parallel PESMOC needs to constraint predictions")
             else:
                 predictionEP, a = self.ppesmoc_EP_computation(a, minimize, obj_model_dict, con_models_dict, key, ps_index, max_ep_iterations)
-                """
-                write_log('get_test_predictive_distributions', self.options['log_route_acq_funs'], \
-                        {'mfs' : predictionEP['mf'], \
-                         'vfs' : predictionEP['vf'], \
-                         'mcs' : predictionEP['mc'], \
-                         'vcs' : predictionEP['vc'], \
-                         'unconstrainedVariances' : unconstrainedVariances})
-                """
 
             return self.compute_PPESMOC_approximation(predictionEP, obj_model_dict, con_models_dict, \
                                                 unconstrainedVariances, constrainedVariances, acq), a
 
         # This method is only for testing the gradients of the full acquisition function
 
-        def test_full_acquisition_gradients(self, pareto_set, obj_model_dict, minimize, con_model_dict, key, tasks, cand, log, fun_log, fun_grad_autograd, func_autograd):
+        def test_full_acquisition_gradients(self, pareto_set, obj_model_dict, minimize, con_model_dict, key, tasks, cand):
 
-            for i in range(cand.shape[0]*cand.shape[1]):
-                cand = np.random.random(cand.shape)
+            # We run everything to guarantee that there is an EP solution already computed
 
-                # We run everything to guarantee that there is an EP solution already computed
-                acq_dict, list_a = self.compute_ep(pareto_set, obj_model_dict, minimize, con_model_dict, key, cand)
+            acq_dict, list_a = self.compute_ep(pareto_set, obj_model_dict, minimize, con_model_dict, key, cand)
 
-                # No we will test the gradients of the acquisition function. We evaluate the aquisition without running EP
+            # No we will test the gradients of the acquisition function. We evaluate the aquisition without running EP
    
-                # This only computes the unconstrainedVariances
+            # This only computes the unconstrainedVariances
 
-                eps = cand * 0
-                EPSILON = 1e-4
-                if i==0:
-                    eps[0,0] = EPSILON
-                elif i==1:
-                    eps[0,1] = EPSILON
-                elif i==2:
-                    eps[1,0] = EPSILON
-                elif i==3:
-                    eps[1,1] = EPSILON
-                elif i==4:
-                    eps[2,0] = EPSILON
-                else:
-                    eps[2,1] = EPSILON
+            eps = cand * 0
+            eps[2,1] = 1e-3
 
-                #Debug the result of the following functions in the log.
-                acq_dict, list_a = self.compute_ep(pareto_set, obj_model_dict, minimize, con_model_dict, key, cand + eps, max_ep_iterations = 0)
+            acq_dict, list_a = self.compute_ep(pareto_set, obj_model_dict, minimize, con_model_dict, key, cand + eps, max_ep_iterations = 0)
 
-                # by default, sum the PESC contribution for all tasks
+            # by default, sum the PESC contribution for all tasks
 
-                if tasks is None:
-                    tasks = acq_dict.keys()
-    
-                # Compute the total acquisition function for the tasks of interests
+            if tasks is None:
+                tasks = acq_dict.keys()
 
-                total_acq = 0.0
-                for task in tasks:
-                    total_acq += acq_dict[ task ]
+            # Compute the total acquisition function for the tasks of interests
 
-                total_acq_ini = total_acq
+            total_acq = 0.0
+            for task in tasks:
+                total_acq += acq_dict[ task ]
 
-                acq_dict, list_a = self.compute_ep(pareto_set, obj_model_dict, minimize, con_model_dict, key, cand - eps, max_ep_iterations = 0)
+            total_acq_ini = total_acq
 
-                # by default, sum the PESC contribution for all tasks
+            acq_dict, list_a = self.compute_ep(pareto_set, obj_model_dict, minimize, con_model_dict, key, cand - eps, max_ep_iterations = 0)
 
-                if tasks is None:
-                    tasks = acq_dict.keys()
+            # by default, sum the PESC contribution for all tasks
 
-                # Compute the total acquisition function for the tasks of interests
+            if tasks is None:
+                tasks = acq_dict.keys()
 
-                total_acq = 0.0
-                for task in tasks:
-                    total_acq += acq_dict[ task ]
+            # Compute the total acquisition function for the tasks of interests
 
-                total_acq_fini = total_acq
+            total_acq = 0.0
+            for task in tasks:
+                total_acq += acq_dict[ task ]
 
-                #grad must be equal to self.compute_gradients_wrt_test_points(obj_model_dict, con_model_dict, pareto_set, tasks, cand, list_a)
-                #grad = (total_acq_ini - total_acq_fini) / (2 * 1e-3)
+            total_acq_fini = total_acq
 
-                #f'(a) = (f(a+h)-f(a)) / h.
-                """
-                acq_dict_plus, list_a = self.compute_ep(pareto_set, obj_model_dict, minimize, con_model_dict, key, cand + eps, max_ep_iterations = 0)
-                if tasks is None:
-                    tasks = acq_dict_plus.keys()
+            #grad must be equal to self.compute_gradients_wrt_test_points(obj_model_dict, con_model_dict, pareto_set, tasks, cand, list_a)
+            grad = (total_acq_ini - total_acq_fini) / (2 * 1e-3)
 
-                # Compute the total acquisition function for the tasks of interests
-
-                total_acq_plus = 0.0
-                for task in tasks:
-                    total_acq_plus += acq_dict_plus[ task ]
-
-                acq_dict_base, _ = self.compute_ep(pareto_set, obj_model_dict, minimize, con_model_dict, key, cand, max_ep_iterations = 0)
-                if tasks is None:
-                    tasks = acq_dict_base.keys()
-
-                # Compute the total acquisition function for the tasks of interests
-
-                total_acq_base = 0.0
-                for task in tasks:
-                    total_acq_base += acq_dict_base[ task ]
-
-                #h = eps
-                # fun_grad_autograd, func_autograd
-                total_acq_plus = fun_grad(cand, obj_model_dict, con_model_dict, pareto_set, list_a, tasks, log, fun_log)
-                """
-                #Funciones de autograd.
-                #total_acq_plus = func_autograd(cand.copy() + eps, obj_model_dict, con_model_dict, pareto_set, list_a, tasks, log, fun_log)
-                #total_acq_ini
-                #total_acq_base = func_autograd(cand.copy() - eps, obj_model_dict, con_model_dict, pareto_set, list_a, tasks, log, fun_log)
-                #total_acq_fini
-                #total_acq_plus = self.compute_ep(pareto_set, obj_model_dict, minimize, con_model_dict, key, cand + eps, max_ep_iterations = 0)
-                #total_acq_base = self.compute_ep(pareto_set, obj_model_dict, minimize, con_model_dict, key, cand, max_ep_iterations = 0)
-                #Definicion de derivada.
-                grad = (total_acq_ini - total_acq_fini) / (2.0*EPSILON)
-                #grad = (total_acq_plus - total_acq_base) / (2.0*EPSILON)
-                autograds = fun_grad_autograd(cand.copy(), obj_model_dict, con_model_dict, pareto_set, list_a, tasks)#, log, fun_log)
-                if i==0:
-                    autograds = autograds[0,0]
-                elif i==1:
-                    autograds = autograds[0,1]
-                elif i==2:
-                    autograds = autograds[1,0]
-                elif i==3:
-                    autograds = autograds[1,1]
-                elif i==4:
-                    autograds = autograds[2,0]
-                else:
-                    autograds = autograds[2,1]
-                import pdb; pdb.set_trace();
-                assert np.abs(grad - autograds) < 1e-5
+            import pdb; pdb.set_trace()
 
             return
 
@@ -4047,23 +3717,7 @@ class PPESMOC(AbstractAcquisitionFunction):
 		convergence = False
     		damping     = 0.5
     		iteration   = 0
-                import time
-                start = time.time()        
     		a = self.update_full_marginals(copy.deepcopy(a))
-                end = time.time()
-                print('update marginals 1: ' + str(end-start) + ' seconds.')
-                """
-                write_log('update_full_marginals', self.options['log_route_acq_funs'], \
-                        {'tVinv_cons' : a['Vinv_cons'], \
-                         'V_cons' : a['V_cons'], \
-                         'm_nat_cons' : a['m_nat_cons'], \
-                         'm_cons' : a['m_cons'], \
-                         'Vinv' : a['Vinv'], \
-                         'V' : a['V'], \
-                         'm_nat' : a['m_nat'], \
-                         'm' : a['m']
-                        })
-                """
     		aOld = copy.deepcopy(a)
 		aOriginal = copy.deepcopy(a)
 
@@ -4085,39 +3739,11 @@ class PPESMOC(AbstractAcquisitionFunction):
                     self.reuse_EP_solution[key][ps_index] = copy.deepcopy(a)
 
                 # We process the factors for the test points only (just one time)
-                start = time.time()
+
                 a = update_full_Factors_only_test_factors(copy.deepcopy(a), 0.1, \
                                 minimize = minimize, no_negative_variances_nor_nands = True)
-                end = time.time()
-                print('update full factors: ' + str(end-start) + ' seconds.')
-                """
-                write_log('update_full_Factors_only_test_factors', self.options['log_route_acq_funs'], \
-                    {'a[ghfhat][ :, :, :, 0, 0 ]': a['ghfhat'][ :, :, :, 0, 0 ], \
-                     'a[ghfhat][ :, :, :, 1, 1 ]': a['ghfhat'][ :, :, :, 1, 1 ], \
-                     'a[ghfhat][ :, :, :, 0, 1 ]': a['ghfhat'][ :, :, :, 0, 1 ], \
-                     'a[ghfhat][ :, :, :, 1, 0 ]': a['ghfhat'][ :, :, :, 1, 0 ], \
-                     'a[hhfhat][ :, :, :, 0 ]': a['hhfhat'][ :, :, :, 0 ], \
-                     'a[hhfhat][ :, :, :, 1 ]': a['hhfhat'][ :, :, :, 1 ], \
-                     'a[g_c_hfhat][ :, :, : ]': a['g_c_hfhat'][ :, :, : ], \
-                     'a[h_c_hfhat][ :, :, : ]': a['h_c_hfhat'][ :, :, : ], \
-                     'a[m]': a['m'], 'a[V]': a['V'], 'a[m_cons]': a['m_cons'], 'a[V_cons]': a['V_cons']})
-                """
-                start = time.time()
                 a = self.update_full_marginals(copy.deepcopy(a))
-                end = time.time()
-                print('update full marginals 2: ' + str(end-start) + ' seconds.')
-                """
-                write_log('update_full_marginals', self.options['log_route_acq_funs'], \
-                        {'Vinv_cons' : a['Vinv_cons'], \
-                         'V_cons' : a['V_cons'], \
-                         'm_nat_cons' : a['m_nat_cons'], \
-                         'm_cons' : a['m_cons'], \
-                         'Vinv' : a['Vinv'], \
-                         'V' : a['V'], \
-                         'm_nat' : a['m_nat'], \
-                         'm' : a['m']
-                        })        
-                """
+        
 		return self.get_test_predictive_distributions(a)
 
 	def get_test_predictive_distributions(self, a):
@@ -4140,7 +3766,6 @@ class PPESMOC(AbstractAcquisitionFunction):
 			predictive_distributions['mc'][ cons ] = a['m_cons'][ cons ][ n_obs + n_pset : n_total ]
 			predictive_distributions['vc'][ cons ] = a['V_cons'][ cons ][ n_obs + n_pset : n_total , n_obs + n_pset : n_total ]
 		
-
 		return predictive_distributions, a
 
 	#Include test marginals.
