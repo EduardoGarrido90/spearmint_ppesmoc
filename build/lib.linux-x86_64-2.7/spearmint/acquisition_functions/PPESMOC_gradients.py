@@ -607,7 +607,7 @@ def update_full_Factors_only_test_factors(a, damping, minimize=True, no_negative
     dlogZdmfOld_pset2 = - ratio / s * (alpha + ratio)
     dlogZdmfOld_cov2 = - ratio / s * (alpha + ratio) * -1.0
 
-    s_cons = np.where(s==0.0, 1.0, s_cons)
+    s_cons = np.where(s_cons==0.0, 1.0, s_cons)
     sc = np.sqrt(s_cons)  
     sc = np.where(sc==1.0, 1e-15, sc)
     dlogZdmcOld = ratio_cons / sc #OK
