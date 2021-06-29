@@ -6,8 +6,8 @@ Home-page: UNKNOWN
 Author: Jasper Snoek, Ryan Adams, Kevin Swersky, Michael Gelbart, Hugo Larochelle, Daniel Hernandez-Lobato and Jose Miguel Hernandez-Lobato
 Author-email: rpa@seas.harvard.edu, jsnoek@seas.harvard.edu, kswersky@cs.toronto.edu, mgelbart@seas.harvard.edu, hugo.larochelle@usherbrooke.ca, daniel.herandnez@uam.es, jmh@seas.harvard.edu
 License: UNKNOWN
-Description: spearmint: Bayesian optimization codebase
-        =========================================
+Description: ## Parallel Predictive Entropy Search for Multi-objective Bayesian Optimization with Constraints Spearmint branch.
+        ============================================================================================================
         
         Spearmint is a software package to perform Bayesian optimization. The Software is designed to automatically run experiments (thus the code name spearmint) in a manner that iteratively adjusts a number of parameters so as to minimize some objective in as few runs as possible.
         

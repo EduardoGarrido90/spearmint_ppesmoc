@@ -93,7 +93,7 @@ def main(expt_dir):
 	more_recommendations = True
 	while more_recommendations:
 
-                recommendation = db.load(experiment_name, 'recommendations', {'id' : i + 1})
+                recommendation = db.load(experiment_name, 'recommendations', {'id' : options["batch_size"] * i + options["batch_size"]})
 
 		if recommendation == None:
 			more_recommendations = False
