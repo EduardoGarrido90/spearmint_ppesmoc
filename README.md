@@ -1,7 +1,7 @@
 ## Parallel Predictive Entropy Search for Multi-objective Bayesian Optimization with Constraints Spearmint branch.
 ========================================================================================
 
-Spearmint is a Python 2.7 software package to perform Bayesian optimization. The Software is designed to automatically run experiments (thus the code name spearmint) in a manner that iteratively adjusts a number of parameters so as to minimize some objective in as few runs as possible.
+Spearmint is a Python 2.7 software package to perform Bayesian optimization, a class of methods that deliver state of the art results when performing the hyper-parameter tuning of machine learning algorithms. The Software is designed to automatically run experiments (thus the code name spearmint) in a manner that iteratively adjusts a number of parameters defined in an input space so as to minimize some objective (or a set of objectives) in as few runs as possible, assuming that each evaluation is costly, noisy and we lack its analytical expression.
 
 ## IMPORTANT: Please read about the license
 Spearmint is under an **Academic and Non-Commercial Research Use License**.  Before using spearmint please be aware of the [license](LICENSE.md).  If you do not qualify to use spearmint you can ask to obtain a license as detailed in the [license](LICENSE.md) or you can use the older open source code version (which is somewhat outdated) at https://github.com/JasperSnoek/spearmint.  
@@ -54,25 +54,24 @@ Follow the next steps to install Spearmint and execute a toy PPESMOC example:
 3. Download and install MongoDB: https://www.mongodb.org/
 4. Install the pymongo package using e.g., pip or anaconda
 5. Install PyGMO package (this is used for solving inner multi-objective optimization problems with known, simple and fast objectives). Follow the instructions of https://esa.github.io/pygmo/install.html
-6. Try to compile Spearmint going into the main folder and execute "sudo python setup.py install". If the installation fails, that means that you lack an additional dependence of Spearmint like numpy or matplotlib. Install it using pip. Try to install spearmint again.
+6. Try to compile Spearmint going into the main folder and execute "sudo python2 setup.py install". If the installation fails, that means that you lack an additional dependence of Spearmint like numpy or matplotlib. Install it using pip. Try to install spearmint again.
 
-### STEP 2: Setting up your experiment
-1. Create a callable objective function. See ../examples/moo/branin.py as an example.
-2. Create a config file. See ../examples/moo/config.json as an example. Here you will see that we specify the PESM acquisition function. Other alternatives are ParEGO, EHI, SMSego and SUR.
+### STEP 2: Setting up your parallel constrained multi-objective experiment and solving it via the PPESMOC acquisition function.
+0. This step assumes that your problem belongs to the parallel constrained multi-objective setting. To see the configuration of other scenarios, like the vanilla one that optimizes a single objective funciton, see other examples of the ../examples folder.
+1. Go to the ../examples/mocotoy_ppesmoc/ folder to see an example.  
+2. Configure your problem: Create a config.json file as the ../examples/mocotoy_ppesmoc/config.json file. Specify the input space changing the variables entry. GPs are guaranteed to work for problems with less than 8 dimensions. Specify the number of BO iterations changing the max_finished_jobs entry and the batch size via the batch_size entry. You can also specify the number of GP samples via the mcmc_iters entry (default 10). Finally, specify the objectives and constraints via the tasks entry as in the ../examples/mocotoy_ppesmoc/config.json file.
+3. Integrate your black-box in Spearmint! Create a xxxx.py file where xxxx is the main_file entry of the config.json file. Spearmint will call the def main(job_id, params) method of that file in a sequential loop. Params is a dictionary that will hold the Spearmint recommended params of each iteration. The keys of the params are the ones specified in the variables entry of the config.json. Now make your cool computations there (like evaluating your machine learning algorithm hyper-parametrized by the hyper-parameters that you retrieve via the params dictionary or other objectives such as the prediction time and some constraints like the size of the file where you save your model). In order to send the values of your objectives and constraints back to Spearmint, return the values in a dictionary where the keys specify each of the black-boxes.
 
 ### STEP 3: Running spearmint
-1. Start up a MongoDB daemon instance: mongod --fork --logpath \<path/to/logfile\> --dbpath \<path/to/dbfolder\>
-2. Run spearmint: "python main.py \</path/to/experiment/directory\>"
-(Try >>python main.py ../examples/toy)
+1. Start up a MongoDB daemon instance: mongod --fork --logpath \<path/to/logfile\> --dbpath \<path/to/dbfolder\> or alternatively start a MongoDB daemon every time that you start your machine. Spearmint will store there the results of each iteration of the experiment.
+2. Run Spearmint and specify the experiment that it needs to solve: "python main.py \</path/to/experiment/directory\>"
+(Try >>python main.py ../examples/mocotoy_ppesmoc) Alternatively, you can be in the experiment folder and run Spearmint from there (python ../../spearmint/main.py .)
+3. Wait until Spearmint finishes the evaluations. Depending on your setting, that can be a costly process! (It will print a have a nice day trace and the end of the experiment). The input space configurations (feasible Pareto sets that correspond to, for example, hyper-parameters or other configurations) recommended by Spearmint will be stored on MongoDB.
 
-### STEP 4: Looking at your results
+### STEP 4: Looking at the results of your experiment and evaluating them.
 Spearmint will output results to standard out / standard err and will also create output files in the experiment directory for each experiment. In addition, you can look at the results in the following ways:
 
-1. The results are stored in the database. The program ../examples/moo/generate_hypervolumes.py extracts them from the database and computes some
-perforamnce metrics, e.g., using the hypervolume.
+1. The recommendations are stored in the database. The program ../examples/mocotoy_ppesmoc/generate_hypervolumes.py extracts them from the database and computes some perforamnce metrics, e.g., using the hypervolumes of them. Run that file and wait until the hypervolumes are computed, check the hypervolumes.txt file and check which has been the line with more hypervolume. Check the output/ folder for the file with the number of that iteration and that will be the hyper-parameter values that optimize your constrained multi-objective problem!
 
 ### STEP 5: Cleanup
-If you want to delete all data associated with an experiment (output files, plots, database entries), run "python cleanup.py \</path/to/experiment/directory\>"
-
-#### (optional) Running multiple experiments at once
-You can start multiple experiments at once using "python run_experiments.py \</path/to/experiment/directory\> N" where N is the number of experiments to run. You can clean them up at once with "python cleanup_experiments.py \</path/to/experiment/directory\> N". 
+If you want to delete all data associated with an experiment (output files, plots, database entries), run "python cleanup.py \</path/to/experiment/directory\>" 
