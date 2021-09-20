@@ -75,3 +75,9 @@ Spearmint will output results to standard out / standard err and will also creat
 
 ### STEP 5: Cleanup
 If you want to delete all data associated with an experiment (output files, plots, database entries), run "python cleanup.py \</path/to/experiment/directory\>" 
+
+
+SOON IN THIS REPO....
+
+-> A multi-model BO method to perform global and local optimization.
+-> BO on a simplex space.
